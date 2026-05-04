@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numzi – Where Play Meets STEM Learning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:   #FDF6E9;
+      --kraft:   #EFE3C8;
+      --warm:    #E0CCA8;
+      --ink:     #3D2C1E;
+      --orange:  #E8844A;
+      --yellow:  #F5C842;
+      --sage:    #7BBF8E;
+      --sky:     #7BBFDB;
+      --lavender:#B59FD6;
+      --coral:   #E87B7B;
+      --brown:   #9B6B4A;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 2.5rem;
+      background: var(--cream);
+      border-bottom: 3px solid var(--warm);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'Fredoka One', cursive; font-size: 2.1rem; color: var(--ink); }
+    .logo .dot { color: var(--orange); }
+    .nav-tag { font-size: .85rem; font-weight: 700; color: var(--brown); font-style: italic; }
+
+    /* ─── HERO ─── */
+    .hero {
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: center;
+      gap: 3rem;
+      padding: 4rem 2.5rem 5rem;
+      background: var(--kraft);
+      clip-path: polygon(0 0,100% 0,100% 90%,97% 100%,93% 93%,89% 100%,85% 92%,81% 100%,77% 93%,73% 100%,69% 92%,65% 100%,61% 93%,57% 100%,53% 93%,49% 100%,45% 92%,41% 100%,37% 93%,33% 100%,29% 92%,25% 100%,21% 93%,17% 100%,13% 92%,9% 100%,5% 93%,1% 100%,0 93%);
+    }
+    .hero-text { max-width: 440px; }
+    .hero-text .pretag {
+      display: inline-block;
+      background: var(--orange); color: #fff;
+      font-family: 'Fredoka One', cursive; font-size: .9rem;
+      padding: .25rem 1rem;
+      border-radius: 3px 9px 5px 7px / 7px 3px 9px 4px;
+      margin-bottom: 1rem; transform: rotate(-1.5deg);
+    }
+    .hero-text h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+      line-height: 1.1; color: var(--ink); margin-bottom: 1rem;
+    }
+    .hero-text h1 .hl { color: var(--orange); }
+    .hero-text p { font-size: 1.05rem; color: #6B4F35; line-height: 1.7; margin-bottom: 1.8rem; }
+    .charm-badges { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .charm-badge {
+      background: #fff;
+      border: 2.5px solid var(--ink);
+      border-radius: 3px 9px 5px 7px / 7px 3px 9px 4px;
+      padding: .35rem .9rem; font-size: .85rem; font-weight: 800;
+      display: flex; align-items: center; gap: .35rem;
+      box-shadow: 2px 3px 0 var(--ink);
+    }
+
+    /* ─── FRIDGE ─── */
+    .fridge-wrapper {
+      flex-shrink: 0;
+      filter: drop-shadow(6px 8px 0 rgba(61,44,30,.25));
+    }
+
+    .fridge {
+      width: 290px;
+      display: flex; flex-direction: column;
+      border: 3.5px solid var(--ink);
+      border-radius: 18px 22px 14px 20px / 16px 18px 20px 14px;
+      background: #F8F4EE;
+      overflow: visible;
+      position: relative;
+    }
+
+    /* Freezer compartment */
+    .fridge-freezer {
+      height: 88px;
+      border-bottom: 3.5px solid var(--ink);
+      border-radius: 16px 20px 0 0 / 14px 16px 0 0;
+      background: #F2EDE4;
+      position: relative;
+      overflow: hidden;
+    }
+    .fridge-freezer .handle {
+      position: absolute; right: 14px; top: 18px;
+      width: 10px; height: 52px;
+      background: #D4C9B8;
+      border: 2px solid var(--ink);
+      border-radius: 5px 8px 6px 7px / 7px 5px 8px 6px;
+      box-shadow: inset -2px 0 3px rgba(0,0,0,.1);
+    }
+    /* little magnets on freezer */
+    .freezer-magnets { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+    .fm {
+      position: absolute;
+      font-size: .95rem;
+      filter: drop-shadow(1px 2px 1px rgba(0,0,0,.15));
+    }
+
+    /* Main door */
+    .fridge-door {
+      position: relative;
+      height: 418px;
+      overflow: hidden;
+      border-radius: 0 0 14px 18px / 0 0 18px 14px;
+    }
+    .fridge-door .handle {
+      position: absolute; right: 14px; top: 20px;
+      width: 10px; height: 70px;
+      background: #D4C9B8;
+      border: 2px solid var(--ink);
+      border-radius: 5px 8px 6px 7px / 7px 5px 8px 6px;
+      box-shadow: inset -2px 0 3px rgba(0,0,0,.1);
+      z-index: 5;
+    }
+
+    /* ─── CLAY CHARMS ─── */
+    .charm-group {
+      position: absolute;
+      z-index: 3;
+    }
+    .charm-loose { display: flex; align-items: flex-end; gap: 3px; }
+    .charm-tri   { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+    .charm-quad  { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+
+    .cc { /* clay charm */
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      background: radial-gradient(circle at 38% 32%, rgba(255,255,255,.72) 0%, var(--cc) 48%, var(--cd) 100%);
+      box-shadow:
+        2px 3px 0 rgba(0,0,0,.18),
+        inset 0 3px 5px rgba(255,255,255,.5),
+        inset 0 -2px 4px rgba(0,0,0,.12);
+      flex-shrink: 0;
+    }
+    /* slight size variation for natural feel */
+    .cc:nth-child(2) { width: 38px; height: 38px; }
+    .cc:nth-child(3) { width: 41px; height: 41px; }
+    .cc:nth-child(4) { width: 37px; height: 37px; }
+
+    /* ─── NUMBER TILES ─── */
+    .num-wrap {
+      position: absolute;
+      z-index: 4;
+      /* transitions set by JS */
+    }
+    .clay-num {
+      width: 50px; height: 50px;
+      border-radius: 10px 18px 12px 16px / 16px 10px 18px 12px;
+      background: radial-gradient(circle at 38% 32%, rgba(255,255,255,.6) 0%, var(--clr) 50%, var(--clrd) 100%);
+      box-shadow:
+        3px 4px 0 rgba(0,0,0,.2),
+        inset 0 3px 6px rgba(255,255,255,.45),
+        inset 0 -2px 5px rgba(0,0,0,.15);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fredoka One', cursive; font-size: 1.55rem;
+      color: #fff;
+      text-shadow: 1px 2px 3px rgba(0,0,0,.3);
+    }
+
+    /* ─── HAND ─── */
+    .anim-hand {
+      position: absolute;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      /* left & top set by JS */
+      transition: left .55s cubic-bezier(.4,0,.2,1), top .55s cubic-bezier(.4,0,.2,1), opacity .3s;
+    }
+
+    /* Shelf line separator between groups & numbers */
+    .shelf-line {
+      position: absolute;
+      left: 14px; right: 30px;
+      top: 276px;
+      border-top: 2px dashed rgba(61,44,30,.18);
+      z-index: 2;
+    }
+
+    /* Fridge bottom vent grill lines */
+    .fridge-vent {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 6px 20px 8px;
+      border-top: 2px solid rgba(61,44,30,.15);
+    }
+    .fridge-vent span {
+      display: block; height: 2px;
+      background: rgba(61,44,30,.12);
+      border-radius: 1px;
+    }
+
+    /* ─── SECTIONS ─── */
+    .section { max-width: 1080px; margin: 0 auto; padding: 4.5rem 2.5rem; }
+    .section-head { text-align: center; margin-bottom: 3rem; }
+    .chalk-label {
+      display: inline-block;
+      background: var(--ink); color: var(--cream);
+      font-family: 'Fredoka One', cursive; font-size: .8rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: .2rem .9rem; border-radius: 2px; margin-bottom: .7rem;
+    }
+    .section-head h2 { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem,4vw,2.8rem); color: var(--ink); line-height: 1.2; }
+    .section-head p { font-size: 1.02rem; color: #6B4F35; max-width: 580px; margin: .75rem auto 0; line-height: 1.7; }
+
+    /* ─── FEATURE CARDS ─── */
+    .what-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .what-card {
+      background: #fff; border: 2.5px solid var(--ink);
+      border-radius: 4px 12px 6px 10px / 10px 4px 12px 5px;
+      padding: 1.8rem 1.4rem;
+      box-shadow: 4px 4px 0 var(--warm);
+    }
+    .what-card .icon-blob {
+      width: 58px; height: 58px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin-bottom: 1rem; border: 2.5px solid var(--ink);
+    }
+    .what-card:nth-child(1) .icon-blob { background:#FDEFC3; border-radius: 60% 40% 55% 45%/45% 55% 45% 55%; }
+    .what-card:nth-child(2) .icon-blob { background:#C8EDD6; border-radius: 45% 55% 40% 60%/55% 45% 55% 45%; }
+    .what-card:nth-child(3) .icon-blob { background:#C8DFF5; border-radius: 50% 50% 60% 40%/40% 60% 40% 60%; }
+    .what-card:nth-child(4) .icon-blob { background:#F5C0C0; border-radius: 40% 60% 45% 55%/60% 40% 60% 40%; }
+    .what-card h3 { font-family: 'Fredoka One', cursive; font-size: 1.15rem; margin-bottom: .4rem; }
+    .what-card p  { font-size: .9rem; color: #6B4F35; line-height: 1.6; }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-bg { background: var(--kraft); padding: 4.5rem 2.5rem; }
+    .steps { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2rem; }
+    .step {
+      background: #fff; border: 2.5px solid var(--ink);
+      border-radius: 4px 14px 6px 12px / 12px 4px 14px 5px;
+      padding: 1.8rem 1.4rem 1.4rem; width: 192px; text-align: center;
+      box-shadow: 4px 5px 0 var(--brown);
+    }
+    .step-num { font-family: 'Fredoka One', cursive; font-size: 2.8rem; line-height: 1; margin-bottom: .5rem; }
+    .step:nth-child(1) .step-num { color: var(--orange); }
+    .step:nth-child(2) .step-num { color: var(--sage); }
+    .step:nth-child(3) .step-num { color: var(--sky); }
+    .step:nth-child(4) .step-num { color: var(--lavender); }
+    .step h3 { font-family: 'Fredoka One', cursive; font-size: 1.05rem; margin-bottom: .35rem; }
+    .step p  { font-size: .85rem; color: #6B4F35; line-height: 1.5; }
+    .step-dot { align-self: center; display: flex; flex-direction: column; gap: 4px; }
+    .step-dot span { width: 6px; height: 6px; background: var(--brown); opacity: .35; border-radius: 50%; display: block; }
+
+    /* ─── AGES ─── */
+    .ages-section { max-width: 1080px; margin: 0 auto; padding: 4.5rem 2.5rem; }
+    .age-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1.2rem; margin-top: 2rem; }
+    .age-card {
+      border: 2.5px solid var(--ink);
+      border-radius: 6px 16px 8px 14px / 14px 6px 16px 7px;
+      padding: 1.6rem 1.2rem; text-align: center;
+      box-shadow: 4px 4px 0 var(--warm);
+    }
+    .age-card:nth-child(1) { background: #FDEFC3; }
+    .age-card:nth-child(2) { background: #C8EDD6; }
+    .age-card:nth-child(3) { background: #C8DFF5; }
+    .age-card:nth-child(4) { background: #F5C0C0; }
+    .age-card .age-icon   { font-size: 2.4rem; margin-bottom: .5rem; }
+    .age-card .age-label  { font-family: 'Fredoka One', cursive; font-size: 1.4rem; margin-bottom: .3rem; }
+    .age-card .age-desc   { font-size: .85rem; font-weight: 700; color: var(--ink); opacity: .75; }
+
+    /* ─── CHARMS STRIP ─── */
+    .charms-bg { background: var(--ink); padding: 3.5rem 2.5rem; text-align: center; }
+    .charms-bg h2 { font-family: 'Fredoka One', cursive; font-size: clamp(1.6rem,3.5vw,2.4rem); color: var(--cream); margin-bottom: .5rem; }
+    .charms-bg p  { color: rgba(253,246,233,.7); font-size: .95rem; margin-bottom: 2rem; }
+    .charm-cloud  { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; max-width: 600px; margin: 0 auto; }
+    .charm-chip {
+      background: var(--cream); border: 2.5px solid var(--cream);
+      border-radius: 5px 13px 7px 11px / 11px 5px 13px 6px;
+      padding: .5rem 1rem; font-size: 1.05rem; font-weight: 800;
+      display: flex; align-items: center; gap: .4rem; color: var(--ink);
+      box-shadow: 3px 3px 0 rgba(255,255,255,.15);
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section { max-width: 680px; margin: 0 auto; padding: 5rem 2.5rem; text-align: center; }
+    .about-logo { font-family: 'Fredoka One', cursive; font-size: 3.5rem; color: var(--ink); margin-bottom: 1rem; }
+    .about-logo .dot { color: var(--orange); }
+    .about-tagline {
+      display: inline-block;
+      background: var(--yellow); border: 2.5px solid var(--ink);
+      border-radius: 3px 9px 5px 7px / 7px 3px 9px 4px;
+      padding: .35rem 1.2rem;
+      font-family: 'Fredoka One', cursive; font-size: 1rem;
+      box-shadow: 3px 3px 0 var(--ink);
+      margin-bottom: 1.5rem; transform: rotate(-1deg);
+    }
+    .about-section p { font-size: 1rem; color: #6B4F35; line-height: 1.75; margin-bottom: 1rem; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--kraft); border-top: 3px solid var(--warm); text-align: center; padding: 2.5rem 2rem; }
+    footer .f-logo { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--ink); margin-bottom: .3rem; }
+    footer .f-logo .dot { color: var(--orange); }
+    footer .f-charms { font-size: 1.4rem; letter-spacing: 4px; margin: .5rem 0; }
+    footer p { font-size: .82rem; color: var(--brown); font-weight: 700; }
+
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-tag { display: none; }
+      .hero { padding: 3rem 1.25rem 5rem; clip-path: none; }
+      .section, .ages-section { padding: 3rem 1.25rem; }
+      .step-dot { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="logo">Numzi<span class="dot">.</span></div>
+  <div class="nav-tag">✏️ Where Play Meets STEM Learning</div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="pretag">🧲 Magnetic Learning Game</div>
+    <h1>Numbers on<br>the <span class="hl">Fridge!</span></h1>
+    <p>
+      Cute clay charm magnets + number tiles that actually stick to your fridge.
+      Watch your toddler sort, count and match — all by themselves.
+    </p>
+    <div class="charm-badges">
+      <span class="charm-badge">🐞 Ages 2–5</span>
+      <span class="charm-badge">⭐ Montessori</span>
+      <span class="charm-badge">🌸 Screen-Free</span>
+      <span class="charm-badge">🧲 Fridge-Ready</span>
+    </div>
+  </div>
+
+  <!-- ─── FRIDGE ILLUSTRATION ─── -->
+  <div class="fridge-wrapper">
+    <div class="fridge">
+
+      <!-- FREEZER (top) -->
+      <div class="fridge-freezer">
+        <div class="handle"></div>
+        <div class="freezer-magnets">
+          <span class="fm" style="top:14px;left:22px;transform:rotate(-8deg)">🌈</span>
+          <span class="fm" style="top:9px; left:72px;transform:rotate(5deg)">☁️</span>
+          <span class="fm" style="top:16px;left:120px;transform:rotate(-4deg);font-size:.8rem">✨</span>
+          <span class="fm" style="top:30px;left:52px;transform:rotate(10deg);font-size:.75rem">🍀</span>
+          <span class="fm" style="top:35px;left:150px;transform:rotate(-6deg);font-size:.8rem">🦋</span>
+        </div>
+      </div>
+
+      <!-- MAIN DOOR -->
+      <div class="fridge-door" id="fridgeDoor">
+        <div class="handle"></div>
+
+        <!-- ─── CHARM GROUPS ─── -->
+
+        <!-- Group 1 · 1 ladybug · top-left -->
+        <div class="charm-group" id="g1" style="top:24px; left:20px; transform:rotate(-4deg)">
+          <div class="cc" style="--cc:#FF8FAB;--cd:#C4507A">🐞</div>
+        </div>
+
+        <!-- Group 2 · 2 stars · top-right -->
+        <div class="charm-group" id="g2" style="top:16px; left:142px; transform:rotate(5deg)">
+          <div class="charm-loose">
+            <div class="cc" style="--cc:#FFD580;--cd:#C49030">⭐</div>
+            <div class="cc" style="--cc:#FFD580;--cd:#C49030; align-self:flex-end; margin-bottom:-6px">⭐</div>
+          </div>
+        </div>
+
+        <!-- Group 3 · 3 flowers · mid-left -->
+        <div class="charm-group" id="g3" style="top:148px; left:12px; transform:rotate(-2deg)">
+          <div class="charm-tri">
+            <div class="cc" style="--cc:#A8E6CF;--cd:#52B888">🌸</div>
+            <div class="cc" style="--cc:#A8E6CF;--cd:#52B888">🌸</div>
+            <div class="cc" style="--cc:#A8E6CF;--cd:#52B888; margin-top:4px; margin-left:20px; grid-column:1/-1; width:40px">🌸</div>
+          </div>
+        </div>
+
+        <!-- Group 4 · 4 moons · mid-right -->
+        <div class="charm-group" id="g4" style="top:140px; left:148px; transform:rotate(4deg)">
+          <div class="charm-quad">
+            <div class="cc" style="--cc:#C9B8F5;--cd:#8060C8">🌙</div>
+            <div class="cc" style="--cc:#C9B8F5;--cd:#8060C8">🌙</div>
+            <div class="cc" style="--cc:#C9B8F5;--cd:#8060C8">🌙</div>
+            <div class="cc" style="--cc:#C9B8F5;--cd:#8060C8">🌙</div>
+          </div>
+        </div>
+
+        <!-- shelf divider -->
+        <div class="shelf-line"></div>
+
+        <!-- ─── NUMBER TILES ─── -->
+        <!-- wrappers are moved by JS; inner div keeps rotation -->
+
+        <div class="num-wrap" id="nw1" style="top:298px; left:16px">
+          <div class="clay-num" style="--clr:#E8694A;--clrd:#A84428; transform:rotate(-5deg)">1</div>
+        </div>
+        <div class="num-wrap" id="nw2" style="top:305px; left:88px">
+          <div class="clay-num" style="--clr:#52B880;--clrd:#248F58; transform:rotate(4deg)">2</div>
+        </div>
+        <div class="num-wrap" id="nw3" style="top:300px; left:154px">
+          <div class="clay-num" style="--clr:#48A8D8;--clrd:#1878A8; transform:rotate(-3deg)">3</div>
+        </div>
+        <div class="num-wrap" id="nw4" style="top:307px; left:220px">
+          <div class="clay-num" style="--clr:#A870D8;--clrd:#7840A8; transform:rotate(6deg)">4</div>
+        </div>
+
+        <!-- ─── ANIMATED HAND ─── -->
+        <div class="anim-hand" id="animHand">
+          <!-- Toddler hand SVG (open, reaching) -->
+          <svg id="handSvg" width="42" height="54" viewBox="0 0 42 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- fingers -->
+            <rect x="1"  y="17" width="8" height="24" rx="4" fill="#FFCBA8" stroke="#A0622D" stroke-width="1.4"/>
+            <rect x="11" y="9"  width="8" height="32" rx="4" fill="#FFCBA8" stroke="#A0622D" stroke-width="1.4"/>
+            <rect x="21" y="7"  width="8" height="34" rx="4" fill="#FFCBA8" stroke="#A0622D" stroke-width="1.4"/>
+            <rect x="31" y="11" width="8" height="30" rx="4" fill="#FFCBA8" stroke="#A0622D" stroke-width="1.4"/>
+            <!-- palm -->
+            <rect x="1"  y="36" width="38" height="17" rx="9" fill="#FFCBA8" stroke="#A0622D" stroke-width="1.4"/>
+            <!-- thumb -->
+            <ellipse cx="3" cy="43" rx="5" ry="10" fill="#FFCBA8" stroke="#A0622D" stroke-width="1.3" transform="rotate(-22 3 43)"/>
+            <!-- knuckle lines -->
+            <path d="M14 40 Q15 38 16 40" stroke="#C8845A" stroke-width="1" stroke-linecap="round"/>
+            <path d="M24 40 Q25 38 26 40" stroke="#C8845A" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+      </div><!-- /fridge-door -->
+
+      <!-- vent grill -->
+      <div class="fridge-vent">
+        <span></span><span></span><span></span>
+      </div>
+
+    </div><!-- /fridge -->
+  </div><!-- /fridge-wrapper -->
+</section>
+
+<!-- ─── WHAT IS NUMZI ─── -->
+<section class="section">
+  <div class="section-head">
+    <div class="chalk-label">About the Game</div>
+    <h2>Numbers + Charms = Magic ✨</h2>
+    <p>Numzi blends magnetic number tiles with adorable clay charms so early math feels like pure creative play.</p>
+  </div>
+  <div class="what-grid">
+    <div class="what-card">
+      <div class="icon-blob">🔢</div>
+      <h3>Number Tiles</h3>
+      <p>Bold magnetic number tiles help children connect written numerals to real quantities — no flashcards needed.</p>
+    </div>
+    <div class="what-card">
+      <div class="icon-blob">🐞</div>
+      <h3>Clay Charms</h3>
+      <p>Handcrafted clay charms — ladybugs, stars, moons, flowers &amp; more — make sorting irresistibly tactile.</p>
+    </div>
+    <div class="what-card">
+      <div class="icon-blob">📐</div>
+      <h3>Quantity Matching</h3>
+      <p>Pick a number, place the matching count of charms beside it. Simple concept, deep learning.</p>
+    </div>
+    <div class="what-card">
+      <div class="icon-blob">📈</div>
+      <h3>Grow Together</h3>
+      <p>Start with 1, 2, 3 — add a new tile as confidence grows. Always at the right challenge level.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<div class="how-bg">
+  <div class="section-head">
+    <div class="chalk-label">How to Play</div>
+    <h2>Four Simple Steps 🎯</h2>
+    <p>No instructions needed — children figure it out naturally through play.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Stick Tiles</h3>
+      <p>Stick number tiles on the fridge or any magnetic surface.</p>
+    </div>
+    <div class="step-dot"><span></span><span></span><span></span></div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Mix Charms</h3>
+      <p>Pour the clay charms into a pile and scatter below the tiles.</p>
+    </div>
+    <div class="step-dot"><span></span><span></span><span></span></div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Pick &amp; Match</h3>
+      <p>Child picks a number and places that many charms beside it.</p>
+    </div>
+    <div class="step-dot"><span></span><span></span><span></span></div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Level Up! 🎉</h3>
+      <p>Add tile 4, then 5… always one step ahead of yesterday.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── AGES ─── -->
+<section class="ages-section">
+  <div class="section-head">
+    <div class="chalk-label">Right Age, Right Challenge</div>
+    <h2>Grows With Your Child 🌱</h2>
+    <p>From first number recognition all the way to early sequencing — Numzi meets kids where they are.</p>
+  </div>
+  <div class="age-cards">
+    <div class="age-card"><div class="age-icon">👶</div><div class="age-label">Age 2</div><div class="age-desc">First Numbers &amp; Colours</div></div>
+    <div class="age-card"><div class="age-icon">🧒</div><div class="age-label">Age 3</div><div class="age-desc">Counting &amp; Sorting</div></div>
+    <div class="age-card"><div class="age-icon">🧑</div><div class="age-label">Age 4</div><div class="age-desc">Quantity Matching</div></div>
+    <div class="age-card"><div class="age-icon">🎓</div><div class="age-label">Age 5</div><div class="age-desc">Sequencing &amp; Patterns</div></div>
+  </div>
+</section>
+
+<!-- ─── CHARMS SHOWCASE ─── -->
+<div class="charms-bg">
+  <h2>🌸 Meet the Charms</h2>
+  <p>Every charm is hand-crafted from clay — no two sets are exactly alike.</p>
+  <div class="charm-cloud">
+    <div class="charm-chip">🐞 Ladybug</div>
+    <div class="charm-chip">⭐ Star</div>
+    <div class="charm-chip">🌙 Moon</div>
+    <div class="charm-chip">🌸 Flower</div>
+    <div class="charm-chip">☕ Cup</div>
+    <div class="charm-chip">🍄 Mushroom</div>
+    <div class="charm-chip">🦋 Butterfly</div>
+    <div class="charm-chip">🐢 Turtle</div>
+    <div class="charm-chip">🌈 Rainbow</div>
+    <div class="charm-chip">🍀 Clover</div>
+    <div class="charm-chip">🐤 Chick</div>
+    <div class="charm-chip">✨ &amp; more!</div>
+  </div>
+</div>
+
+<!-- ─── ABOUT ─── -->
+<section class="about-section">
+  <div class="about-logo">Numzi<span class="dot">.</span></div>
+  <div class="about-tagline">Where Play Meets STEM Learning</div>
+  <p><strong>Numzi STEM Labs</strong> designs hands-on early learning toys that make math feel like an adventure, not a lesson. Every product is thoughtfully crafted to support Montessori-style independent play.</p>
+  <p>We believe the best classroom is a playful one — and that every child deserves to discover the joy of numbers through their hands, their imagination, and a handful of adorable clay charms.</p>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="f-logo">Numzi<span class="dot">.</span></div>
+  <div class="f-charms">🐞 ⭐ 🌸 🌙 🍄</div>
+  <p>© 2026 Numzi STEM Labs &nbsp;·&nbsp; Where Play Meets STEM Learning</p>
+</footer>
+
+<!-- ─── ANIMATION ─── -->
+<script>
+(function () {
+  const door   = document.getElementById('fridgeDoor');
+  const hand   = document.getElementById('animHand');
+
+  /* Original resting positions for the four number wrappers */
+  const origPos = [
+    { id: 'nw1', top: 298, left: 16  },
+    { id: 'nw2', top: 305, left: 88  },
+    { id: 'nw3', top: 300, left: 154 },
+    { id: 'nw4', top: 307, left: 220 },
+  ];
+
+  /* Where each number ends up (next to its group) */
+  const dropPos = [
+    { top: 70,  left: 14  },  // n1 → below g1
+    { top: 80,  left: 148 },  // n2 → below g2
+    { top: 205, left: 10  },  // n3 → below g3
+    { top: 198, left: 148 },  // n4 → below g4
+  ];
+
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+
+  /* Place hand visually above the centre of a wrapper */
+  function moveHandToWrap(wrapEl, dur = 550) {
+    const l = parseInt(wrapEl.style.left);
+    const t = parseInt(wrapEl.style.top);
+    hand.style.transition = `left ${dur}ms cubic-bezier(.4,0,.2,1), top ${dur}ms cubic-bezier(.4,0,.2,1)`;
+    hand.style.left = (l + 5)  + 'px';
+    hand.style.top  = (t - 48) + 'px';
+  }
+
+  /* Move a number wrapper smoothly */
+  function moveWrap(wrapEl, top, left, dur = 850) {
+    wrapEl.style.transition = `left ${dur}ms cubic-bezier(.34,1.4,.64,1), top ${dur}ms cubic-bezier(.34,1.4,.64,1)`;
+    wrapEl.style.top  = top  + 'px';
+    wrapEl.style.left = left + 'px';
+  }
+
+  async function runLoop() {
+    /* ── RESET ── */
+    hand.style.transition = 'opacity .25s';
+    hand.style.opacity    = '0';
+    origPos.forEach(({ id, top, left }) => {
+      const w = document.getElementById(id);
+      w.style.transition = 'none';
+      w.style.top  = top  + 'px';
+      w.style.left = left + 'px';
+    });
+    await wait(900);
+
+    /* Show hand at start position */
+    hand.style.left    = '20px';
+    hand.style.top     = '340px';
+    hand.style.opacity = '1';
+    await wait(400);
+
+    /* ── SEQUENCE: drag each number to its group ── */
+    for (let i = 0; i < 4; i++) {
+      const wrapEl = document.getElementById(origPos[i].id);
+
+      /* 1. Hand floats to the number */
+      moveHandToWrap(wrapEl, 580);
+      await wait(650);
+
+      /* 2. Tiny lift ("grab") */
+      wrapEl.style.transition = 'top .18s ease, left .18s ease';
+      wrapEl.style.top = (parseInt(wrapEl.style.top) - 10) + 'px';
+      await wait(230);
+
+      /* 3. Drag number + hand up to its group */
+      const dp = dropPos[i];
+      moveWrap(wrapEl, dp.top, dp.left, 880);
+
+      /* hand follows the wrapper */
+      hand.style.transition = `left 880ms cubic-bezier(.34,1.4,.64,1), top 880ms cubic-bezier(.34,1.4,.64,1)`;
+      hand.style.left = (dp.left + 5)  + 'px';
+      hand.style.top  = (dp.top  - 48) + 'px';
+      await wait(960);
+
+      /* 4. Release */
+      hand.style.transition = 'opacity .2s';
+      hand.style.opacity = '.4';
+      await wait(180);
+      hand.style.opacity = '.9';
+      await wait(340);
+    }
+
+    /* ── CELEBRATE: hand does a little wave ── */
+    hand.style.transition = 'transform .25s ease';
+    hand.style.transform  = 'rotate(20deg)';
+    await wait(260);
+    hand.style.transform  = 'rotate(-15deg)';
+    await wait(220);
+    hand.style.transform  = 'rotate(10deg)';
+    await wait(200);
+    hand.style.transform  = 'rotate(0deg)';
+    await wait(1400);
+
+    /* ── RESET numbers zip back ── */
+    hand.style.transition = 'opacity .3s';
+    hand.style.opacity    = '0';
+    await wait(350);
+
+    origPos.forEach(({ id, top, left }) => {
+      const w = document.getElementById(id);
+      w.style.transition = 'left .4s ease, top .4s ease';
+      w.style.top  = top  + 'px';
+      w.style.left = left + 'px';
+    });
+    await wait(900);
+
+    runLoop();   // loop forever
+  }
+
+  /* Kick off after a short delay so the page can paint first */
+  setTimeout(runLoop, 800);
+})();
+</script>
+
+</body>
+</html>
