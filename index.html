@@ -565,7 +565,7 @@
   </div>
 
   <div class="hero-text">
-    <div class="pretag">🧲 Magnetic Learning Game</div>
+    <div class="pretag">🧲 Magnetic Counting Game</div>
     <h1>Numbers on<br>the <span class="hl">Fridge!</span></h1>
     <p>
       Cute clay charm magnets + number tiles that actually stick to your fridge.
@@ -1021,21 +1021,21 @@
 
   /* Where each number ends up (next to its group) */
   const dropPos = [
-    { top: 70,  left: 14  },  // n1 → below g1
-    { top: 80,  left: 148 },  // n2 → below g2
-    { top: 205, left: 10  },  // n3 → below g3
-    { top: 198, left: 148 },  // n4 → below g4
+    { top: 72,  left: 14  },  // n1 → below g1 (ladybug top:24, h:52 → bottom:76)
+    { top: 66,  left: 140 },  // n2 → below g2 (suns top:16, h:50 → bottom:66)
+    { top: 200, left: 10  },  // n3 → below g3 (flowers top:148, h:~50 → bottom:198)
+    { top: 194, left: 142 },  // n4 → below g4 (cats top:140, h:~50 → bottom:190)
   ];
 
   const wait = ms => new Promise(r => setTimeout(r, ms));
 
-  /* Place hand visually above the centre of a wrapper */
+  /* Place hand below the number so fingers reach up from underneath */
   function moveHandToWrap(wrapEl, dur = 550) {
     const l = parseInt(wrapEl.style.left);
     const t = parseInt(wrapEl.style.top);
     hand.style.transition = `left ${dur}ms cubic-bezier(.4,0,.2,1), top ${dur}ms cubic-bezier(.4,0,.2,1)`;
-    hand.style.left = (l + 5)  + 'px';
-    hand.style.top  = (t - 48) + 'px';
+    hand.style.left = (l + 2)  + 'px';
+    hand.style.top  = (t + 32) + 'px';
   }
 
   /* Move a number wrapper smoothly */
@@ -1057,9 +1057,9 @@
     });
     await wait(900);
 
-    /* Show hand at start position */
-    hand.style.left    = '20px';
-    hand.style.top     = '340px';
+    /* Show hand at start position — below the number row */
+    hand.style.left    = '18px';
+    hand.style.top     = '370px';
     hand.style.opacity = '1';
     await wait(400);
 
@@ -1080,10 +1080,10 @@
       const dp = dropPos[i];
       moveWrap(wrapEl, dp.top, dp.left, 880);
 
-      /* hand follows the wrapper */
+      /* hand follows the wrapper — stays below the number */
       hand.style.transition = `left 880ms cubic-bezier(.34,1.4,.64,1), top 880ms cubic-bezier(.34,1.4,.64,1)`;
-      hand.style.left = (dp.left + 5)  + 'px';
-      hand.style.top  = (dp.top  - 48) + 'px';
+      hand.style.left = (dp.left + 2)  + 'px';
+      hand.style.top  = (dp.top  + 32) + 'px';
       await wait(960);
 
       /* 4. Release */
