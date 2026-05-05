@@ -320,7 +320,8 @@
     footer { background: var(--kraft); border-top: 3px solid var(--warm); text-align: center; padding: 2.5rem 2rem; }
     footer .f-logo { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--ink); margin-bottom: .3rem; }
     footer .f-logo .dot { color: var(--orange); }
-    footer .f-charms { font-size: 1.4rem; letter-spacing: 4px; margin: .5rem 0; }
+    footer .f-charms { display: flex; align-items: center; justify-content: center; gap: 10px; margin: .5rem 0; }
+    footer .f-charms img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,.2)); }
     footer p { font-size: .82rem; color: var(--brown); font-weight: 700; }
 
     /* hero needs to be a positioning context for the animals */
@@ -1007,7 +1008,13 @@
 <!-- ─── FOOTER ─── -->
 <footer>
   <div class="f-logo"><img src="assets/logo.png" alt="Numzi" height="60" style="display:block;margin:0 auto;filter:drop-shadow(1px 1px 2px rgba(0,0,0,.1))"/></div>
-  <div class="f-charms">🐞 ⭐ 🌸 🌙 🍄</div>
+  <div class="f-charms">
+    <img src="assets/ladybug.png" alt="ladybug">
+    <img src="assets/sun.png" alt="sun">
+    <img src="assets/flower.png" alt="flower">
+    <img src="assets/cat.png" alt="cat">
+    <img src="assets/rainbow.png" alt="rainbow">
+  </div>
   <p>© 2026 Numzi STEM Labs &nbsp;·&nbsp; Where Play Meets STEM Learning</p>
 </footer>
 
