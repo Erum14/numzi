@@ -616,7 +616,60 @@
 
         <!-- Group 1 · 1 ladybug · top-left -->
         <div class="charm-group" id="g1" style="top:24px; left:20px; transform:rotate(-4deg)">
-          <div class="cc" style="--cc:#FF8FAB;--cd:#C4507A">🐞</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 195" width="46" height="46" style="filter:drop-shadow(2px 3px 3px rgba(0,0,0,.28));flex-shrink:0">
+            <defs>
+              <radialGradient id="lb-sh" cx="36%" cy="26%" r="72%">
+                <stop offset="0%"   stop-color="#FF7B7B"/>
+                <stop offset="28%"  stop-color="#E81818"/>
+                <stop offset="72%"  stop-color="#C40000"/>
+                <stop offset="100%" stop-color="#6E0000"/>
+              </radialGradient>
+              <radialGradient id="lb-hd" cx="30%" cy="26%" r="70%">
+                <stop offset="0%"   stop-color="#686868"/>
+                <stop offset="38%"  stop-color="#2A2A2A"/>
+                <stop offset="100%" stop-color="#080808"/>
+              </radialGradient>
+            </defs>
+            <!-- body shadow -->
+            <ellipse cx="118" cy="182" rx="74" ry="11" fill="rgba(0,0,0,.18)"/>
+            <!-- shell -->
+            <ellipse cx="118" cy="96" rx="76" ry="74" fill="url(#lb-sh)"/>
+            <!-- shiny highlight -->
+            <ellipse cx="92" cy="58" rx="32" ry="20" fill="rgba(255,255,255,.28)" transform="rotate(-22 92 58)"/>
+            <!-- centre spine -->
+            <path d="M118 23 Q111 96 118 170" stroke="#5A0000" stroke-width="4.5" fill="none"/>
+            <!-- 7 spots -->
+            <circle cx="98"  cy="52"  r="14" fill="#120000"/>
+            <circle cx="146" cy="56"  r="13" fill="#120000"/>
+            <circle cx="170" cy="78"  r="11" fill="#120000"/>
+            <circle cx="90"  cy="97"  r="12" fill="#120000"/>
+            <circle cx="152" cy="100" r="15" fill="#120000"/>
+            <circle cx="98"  cy="140" r="12" fill="#120000"/>
+            <circle cx="148" cy="144" r="11" fill="#120000"/>
+            <!-- head shadow -->
+            <circle cx="56" cy="130" r="49" fill="rgba(0,0,0,.22)" transform="translate(4,5)"/>
+            <!-- head -->
+            <circle cx="56" cy="128" r="48" fill="url(#lb-hd)"/>
+            <!-- head highlight -->
+            <ellipse cx="40" cy="108" rx="15" ry="11" fill="rgba(255,255,255,.14)" transform="rotate(-18 40 108)"/>
+            <!-- left eye -->
+            <circle cx="36" cy="118" r="15" fill="white"/>
+            <circle cx="38" cy="120" r="9"  fill="#111"/>
+            <circle cx="34" cy="115" r="4"  fill="white"/>
+            <circle cx="41" cy="116" r="1.5" fill="rgba(255,255,255,.8)"/>
+            <!-- right eye -->
+            <circle cx="72" cy="116" r="15" fill="white"/>
+            <circle cx="74" cy="118" r="9"  fill="#111"/>
+            <circle cx="70" cy="113" r="4"  fill="white"/>
+            <circle cx="77" cy="114" r="1.5" fill="rgba(255,255,255,.8)"/>
+            <!-- smile -->
+            <path d="M34 136 Q56 152 78 136" stroke="rgba(255,255,255,.55)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <!-- antennae -->
+            <path d="M43 82 Q32 54 24 34"  stroke="#1A0000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <path d="M66 80 Q64 52 73 32"  stroke="#1A0000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <circle cx="22" cy="31" r="7.5" fill="#1A0000"/>
+            <circle cx="74" cy="29" r="7.5" fill="#1A0000"/>
+          </svg>
         </div>
 
         <!-- Group 2 · 2 stars · top-right -->
