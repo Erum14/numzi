@@ -237,8 +237,12 @@
       box-shadow: 4px 4px 0 var(--warm);
     }
     .what-card .icon-blob {
-      width: 58px; height: 58px; display: flex; align-items: center; justify-content: center;
-      font-size: 1.8rem; margin-bottom: 1rem; border: 2.5px solid var(--ink);
+      width: 68px; height: 68px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem; border: 2.5px solid var(--ink); overflow: hidden;
+    }
+    .what-card .icon-blob img {
+      width: 52px; height: 52px; object-fit: contain;
+      filter: drop-shadow(1px 2px 2px rgba(0,0,0,.2));
     }
     .what-card:nth-child(1) .icon-blob { background:#FDEFC3; border-radius: 60% 40% 55% 45%/45% 55% 45% 55%; }
     .what-card:nth-child(2) .icon-blob { background:#C8EDD6; border-radius: 45% 55% 40% 60%/55% 45% 55% 45%; }
@@ -728,22 +732,22 @@
   </div>
   <div class="what-grid">
     <div class="what-card">
-      <div class="icon-blob">🔢</div>
+      <div class="icon-blob"><img src="assets/one.png" alt="number charm"/></div>
       <h3>Number Charms</h3>
       <p>Bold magnetic number charms help children connect written numerals to real quantities — no flashcards needed.</p>
     </div>
     <div class="what-card">
-      <div class="icon-blob">🐞</div>
+      <div class="icon-blob"><img src="assets/ladybug.png" alt="ladybug charm"/></div>
       <h3>Clay Charms</h3>
       <p>Handcrafted clay charms — ladybugs, suns, cats, flowers &amp; more — make sorting irresistibly tactile.</p>
     </div>
     <div class="what-card">
-      <div class="icon-blob">📐</div>
+      <div class="icon-blob"><img src="assets/cat.png" alt="cat charm"/></div>
       <h3>Quantity Matching</h3>
       <p>Pick a number, place the matching count of charms beside it. Simple concept, deep learning.</p>
     </div>
     <div class="what-card">
-      <div class="icon-blob">📈</div>
+      <div class="icon-blob"><img src="assets/rainbow.png" alt="rainbow charm"/></div>
       <h3>Grow Together</h3>
       <p>Start with 1, 2, 3 — add a new number charm as confidence grows. Always at the right challenge level.</p>
     </div>
