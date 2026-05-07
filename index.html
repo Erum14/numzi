@@ -53,7 +53,7 @@
     .hero-text { max-width: 440px; }
     .hero-text .pretag {
       display: inline-block;
-      background: #fff; color: #FF6B9D;
+      background: #FEFAF4; color: #FF6B9D;
       font-family: 'Fredoka One', cursive; font-size: .9rem;
       padding: .25rem 1rem;
       border-radius: 3px 9px 5px 7px / 7px 3px 9px 4px;
@@ -73,7 +73,7 @@
     .hero-text p { font-size: 1.05rem; color: #2A1A0E; line-height: 1.7; margin-bottom: 1.8rem; font-weight: 700; text-shadow: 1px 1px 0 rgba(255,255,255,.7); }
     .charm-badges { display: flex; flex-wrap: wrap; gap: .5rem; }
     .charm-badge {
-      background: #fff;
+      background: #FEFAF4;
       border: 2.5px solid var(--ink);
       border-radius: 3px 9px 5px 7px / 7px 3px 9px 4px;
       padding: .35rem .9rem; font-size: .85rem; font-weight: 800;
@@ -232,7 +232,7 @@
     /* ─── FEATURE CARDS ─── */
     .what-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
     .what-card {
-      background: #fff; border: 2.5px solid var(--ink);
+      background: #FEFAF4; border: 2.5px solid var(--ink);
       border-radius: 4px 12px 6px 10px / 10px 4px 12px 5px;
       padding: 1.8rem 1.4rem;
       box-shadow: 4px 4px 0 var(--warm);
@@ -256,7 +256,7 @@
     .how-bg { background: var(--kraft); padding: 4.5rem 2.5rem; }
     .steps { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2rem; }
     .step {
-      background: #fff; border: 2.5px solid var(--ink);
+      background: #FEFAF4; border: 2.5px solid var(--ink);
       border-radius: 4px 14px 6px 12px / 12px 4px 14px 5px;
       padding: 1.8rem 1.4rem 1.4rem; width: 192px; text-align: center;
       box-shadow: 4px 5px 0 var(--brown);
@@ -295,13 +295,15 @@
     .charms-bg p  { color: rgba(253,246,233,.7); font-size: .95rem; margin-bottom: 2rem; }
     .charm-cloud  { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; max-width: 600px; margin: 0 auto; }
     .charm-chip {
-      background: var(--cream); border: 2.5px solid var(--cream);
+      background: #F5EFE6; border: 2.5px solid #F5EFE6;
       border-radius: 5px 13px 7px 11px / 11px 5px 13px 6px;
-      padding: 0 1rem; height: 48px; font-size: 1.05rem; font-weight: 800;
+      padding: 0 1rem; height: 55px; font-size: 1.05rem; font-weight: 800;
       display: flex; align-items: center; gap: .4rem; color: var(--ink);
       box-shadow: 3px 3px 0 rgba(255,255,255,.15);
     }
-    .charm-chip img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,.18)); }
+    .charm-chip img { width: 58px; height: 58px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,.18)); }
+    .charm-chip.melon img { width: 74px; height: 74px; }
+    .charm-chip.egg img { width: 70px; height: 70px; }
 
     /* ─── ABOUT ─── */
     .about-section { max-width: 680px; margin: 0 auto; padding: 5rem 2.5rem; text-align: center; }
@@ -358,7 +360,10 @@
 <!-- ─── NAV ─── -->
 <nav>
   <div class="logo"><img src="assets/logo.png" alt="Numzi" height="110" style="display:block;filter:drop-shadow(1px 1px 2px rgba(0,0,0,.1))"/></div>
-  <div class="nav-tag">✏️ Where Play Meets STEM Learning</div>
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <div class="nav-tag">✏️ Where Play Meets STEM Learning</div>
+    <a href="game.html" style="font-family:'Fredoka One',cursive;font-size:1.05rem;background:var(--orange);color:#fff;padding:.4rem 1.1rem;border-radius:10px;text-decoration:none;box-shadow:0 3px 0 #b85e28;white-space:nowrap;">🎮 Play Game</a>
+  </div>
 </nav>
 
 <!-- ─── HERO ─── -->
@@ -701,19 +706,18 @@
 <!-- ─── CHARMS SHOWCASE ─── -->
 <div class="charms-bg">
   <h2>🌸 Meet the Charms</h2>
-  <p>Every charm is hand-crafted from clay. No two sets are exactly alike.</p>
+  <p>Every charm is hand-crafted from clay.</p>
   <div class="charm-cloud">
     <div class="charm-chip"><img src="assets/charms/ladybug.png" alt=""> Ladybug</div>
     <div class="charm-chip"><img src="assets/charms/sun.png" alt=""> Sun</div>
     <div class="charm-chip"><img src="assets/charms/cat.png" alt=""> Cat</div>
     <div class="charm-chip"><img src="assets/charms/flower.png" alt=""> Flower</div>
     <div class="charm-chip"><img src="assets/charms/mushroom.png" alt=""> Mushroom</div>
-    <div class="charm-chip"><img src="assets/charms/honeybee.png" alt=""> Honey Bee</div>
     <div class="charm-chip"><img src="assets/charms/rainbow.png" alt=""> Rainbow</div>
     <div class="charm-chip"><img src="assets/charms/frog.png" alt=""> Frog</div>
     <div class="charm-chip"><img src="assets/charms/penguin.png" alt=""> Penguin</div>
-    <div class="charm-chip"><img src="assets/charms/egg.png" alt=""> Egg</div>
-    <div class="charm-chip"><img src="assets/charms/melon.png" alt=""> Melon</div>
+    <div class="charm-chip egg"><img src="assets/charms/egg.png" alt=""> Egg</div>
+    <div class="charm-chip melon"><img src="assets/charms/melon.png" alt=""> Melon</div>
     <div class="charm-chip"><img src="assets/charms/gingerbread.png" alt=""> Gingerbread</div>
     <div class="charm-chip">✨ &amp; more!</div>
   </div>
