@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numzi – Learning Videos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:   #FDF6E9;
+      --kraft:   #EFE3C8;
+      --warm:    #E0CCA8;
+      --ink:     #3D2C1E;
+      --orange:  #E8844A;
+      --yellow:  #F5C842;
+      --sage:    #7BBF8E;
+      --sky:     #7BBFDB;
+      --lavender:#B59FD6;
+      --coral:   #E87B7B;
+      --brown:   #9B6B4A;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #FEFAF4;
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 100px;
+      background: var(--cream);
+      border-bottom: 3px solid var(--warm);
+      position: sticky; top: 0; z-index: 100;
+      flex-shrink: 0;
+    }
+    .logo { line-height: 0; overflow: visible; }
+    .nav-links { display: flex; gap: .8rem; align-items: center; }
+    .nav-links a {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      color: var(--brown);
+      text-decoration: none;
+      padding: .4rem 1rem;
+      border-radius: 10px;
+      transition: background .2s, color .2s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover { background: var(--warm); color: var(--ink); }
+    .nav-links a.active { background: var(--sky); color: #fff; }
+    .nav-links a.game-link { background: var(--orange); color: #fff; box-shadow: 0 3px 0 #b85e28; }
+    .nav-links a.game-link:hover { background: #d4713a; }
+
+    /* ─── PAGE LAYOUT ─── */
+    .page-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 3rem;
+      gap: 1.2rem;
+    }
+
+    /* ─── CATEGORY TABS ─── */
+    .cat-tabs {
+      display: flex;
+      gap: .7rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .cat-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      color: var(--brown);
+      margin-right: .2rem;
+    }
+    .cat-tab {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      padding: .45rem 1.4rem;
+      border-radius: 50px;
+      border: 2.5px solid var(--warm);
+      background: var(--cream);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .cat-tab:hover { border-color: var(--sky); color: var(--sky); }
+    .cat-tab.active {
+      background: var(--sky);
+      border-color: var(--sky);
+      color: #fff;
+      box-shadow: 0 3px 0 #4fa3c7;
+    }
+    .cat-tab[data-cat="habits"].active {
+      background: var(--sage);
+      border-color: var(--sage);
+      box-shadow: 0 3px 0 #4fa070;
+    }
+    .cat-tab[data-cat="habits"]:hover { border-color: var(--sage); color: var(--sage); }
+
+    /* ─── MAIN AREA ─── */
+    .main-area {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    /* ─── PLAYER COLUMN ─── */
+    .player-col {
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+    }
+
+    /* YouTube player wrapper — 16:9 */
+    .player-shell {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.22);
+    }
+    #yt-player {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Loading overlay */
+    .player-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .8rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+      border-radius: 16px;
+    }
+    .player-overlay.show { opacity: 1; pointer-events: auto; }
+    .overlay-play-btn {
+      width: 72px; height: 72px;
+      background: var(--orange);
+      border: none; border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      transition: transform .15s;
+    }
+    .overlay-play-btn:hover { transform: scale(1.1); }
+    .overlay-play-btn svg { margin-left: 4px; }
+    .overlay-title {
+      font-family: 'Fredoka One', cursive;
+      color: #fff;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 0 1rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,.6);
+    }
+
+    /* ─── VIDEO INFO ─── */
+    .video-info {
+      background: var(--cream);
+      border: 2px solid var(--warm);
+      border-radius: 12px;
+      padding: .8rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+    .video-info .vi-badge {
+      font-family: 'Fredoka One', cursive;
+      font-size: .75rem;
+      padding: .2rem .7rem;
+      border-radius: 50px;
+      background: var(--sky);
+      color: #fff;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .video-info .vi-badge.habits { background: var(--sage); }
+    .video-info .vi-title {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--ink);
+      flex: 1;
+    }
+    .video-info .vi-counter {
+      font-size: .85rem;
+      color: var(--brown);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ─── CONTROLS ─── */
+    .controls-bar {
+      background: var(--ink);
+      border-radius: 14px;
+      padding: .9rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+    .time-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: .8rem;
+      color: rgba(255,255,255,.7);
+      white-space: nowrap;
+      min-width: 38px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255,255,255,.2);
+      border-radius: 99px;
+      cursor: pointer;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 99px;
+      width: 0%;
+      transition: width .5s linear;
+    }
+    .progress-track:hover .progress-fill { background: var(--yellow); }
+
+    /* Main controls row */
+    .ctrl-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+    }
+    .ctrl-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      padding: .4rem;
+      transition: background .2s, transform .15s;
+      color: #fff;
+    }
+    .ctrl-btn:hover { background: rgba(255,255,255,.12); transform: scale(1.1); }
+    .ctrl-btn:active { transform: scale(.95); }
+    .ctrl-btn.play-pause-btn {
+      width: 52px; height: 52px;
+      background: var(--orange);
+      border-radius: 50%;
+      box-shadow: 0 3px 12px rgba(232,132,74,.5);
+    }
+    .ctrl-btn.play-pause-btn:hover { background: #d4713a; }
+    .ctrl-btn svg { display: block; }
+
+    /* ─── PLAYLIST ─── */
+    .playlist-col {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+    .playlist-header {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      color: var(--brown);
+      padding: .3rem .2rem;
+    }
+    .playlist-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      max-height: calc(9/16 * (100vw - 300px - 4.5rem) + 110px);
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    .playlist-scroll::-webkit-scrollbar { width: 4px; }
+    .playlist-scroll::-webkit-scrollbar-thumb { background: var(--warm); border-radius: 99px; }
+
+    .pl-item {
+      display: flex;
+      gap: .7rem;
+      align-items: flex-start;
+      background: var(--cream);
+      border: 2px solid var(--warm);
+      border-radius: 12px;
+      padding: .55rem .7rem;
+      cursor: pointer;
+      transition: border-color .2s, background .2s, transform .15s;
+    }
+    .pl-item:hover { border-color: var(--sky); background: #f0f7fb; transform: translateX(2px); }
+    .pl-item.active {
+      border-color: var(--sky);
+      background: #e0f2fa;
+    }
+    .pl-item.habits-item.active { border-color: var(--sage); background: #e4f5ec; }
+    .pl-item.habits-item:hover { border-color: var(--sage); background: #edf8f2; }
+
+    .pl-thumb {
+      position: relative;
+      width: 72px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #ccc;
+    }
+    .pl-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .pl-now {
+      position: absolute;
+      inset: 0;
+      background: rgba(232,132,74,.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+    }
+    .pl-item.active .pl-now { opacity: 1; }
+    .pl-meta { flex: 1; display: flex; flex-direction: column; gap: .15rem; }
+    .pl-num {
+      font-family: 'Fredoka One', cursive;
+      font-size: .72rem;
+      color: var(--brown);
+    }
+    .pl-title {
+      font-weight: 800;
+      font-size: .85rem;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 760px) {
+      nav { padding: 0 1rem; }
+      .nav-links a { font-size: .9rem; padding: .35rem .75rem; }
+      .page-wrap { padding: 1rem .8rem 2rem; }
+      .main-area { grid-template-columns: 1fr; }
+      .playlist-scroll { max-height: 220px; }
+      .pl-item { gap: .5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="logo">
+    <a href="index.html"><img src="assets/logo.png" alt="Numzi" height="110" style="display:block;filter:drop-shadow(1px 1px 2px rgba(0,0,0,.1))"/></a>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="game.html" class="game-link">🎮 Games</a>
+    <a href="videos.html" class="active">📺 Videos</a>
+  </div>
+</nav>
+
+<!-- ─── PAGE ─── -->
+<div class="page-wrap">
+
+  <!-- Category tabs -->
+  <div class="cat-tabs">
+    <span class="cat-label">Category:</span>
+    <button class="cat-tab active" data-cat="language" onclick="switchCat('language')">🗣️ Language</button>
+    <button class="cat-tab" data-cat="habits" onclick="switchCat('habits')">🌟 Good Habits</button>
+  </div>
+
+  <!-- Main area -->
+  <div class="main-area">
+
+    <!-- Left: Player -->
+    <div class="player-col">
+
+      <!-- Player shell -->
+      <div class="player-shell">
+        <div id="yt-player"></div>
+        <!-- Initial overlay before user presses play -->
+        <div class="player-overlay show" id="playerOverlay">
+          <button class="overlay-play-btn" onclick="overlayPlay()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <div class="overlay-title" id="overlayTitle">Press play to start</div>
+        </div>
+      </div>
+
+      <!-- Video info strip -->
+      <div class="video-info">
+        <div class="vi-badge" id="viBadge">Language</div>
+        <div class="vi-title" id="viTitle">Loading...</div>
+        <div class="vi-counter" id="viCounter">1 / 1</div>
+      </div>
+
+      <!-- Controls bar -->
+      <div class="controls-bar">
+        <!-- Progress -->
+        <div class="progress-wrap">
+          <span class="time-label" id="timeCur">0:00</span>
+          <div class="progress-track" id="progressTrack" onclick="seekClick(event)">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <span class="time-label" id="timeDur" style="text-align:right">0:00</span>
+        </div>
+        <!-- Buttons -->
+        <div class="ctrl-row">
+          <!-- Prev -->
+          <button class="ctrl-btn" title="Previous" onclick="prevVideo()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,.85)">
+              <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/>
+            </svg>
+          </button>
+          <!-- Play/Pause -->
+          <button class="ctrl-btn play-pause-btn" id="playPauseBtn" title="Play / Pause" onclick="togglePlay()">
+            <svg id="iconPlay" width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="iconPause" width="26" height="26" viewBox="0 0 24 24" fill="#fff" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          <!-- Next -->
+          <button class="ctrl-btn" title="Next" onclick="nextVideo()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,.85)">
+              <path d="M6 18l8.5-6L6 6v12zm2.5-6 5.5 3.9V8.1L8.5 12zM16 6h2v12h-2z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Playlist -->
+    <div class="playlist-col">
+      <div class="playlist-header" id="playlistHeader">🗣️ Language Playlist</div>
+      <div class="playlist-scroll" id="playlistEl"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+/* ─── PLAYLIST DATA ─── */
+const PLAYLISTS = {
+  language: [
+    {
+      id: 'xEcFx5KG_KY',
+      start: 1628,
+      title: 'Learn to Talk – Language Building for Toddlers',
+    },
+    // Add more language videos below:
+    // { id: 'VIDEO_ID', start: 0, title: 'Video Title' },
+  ],
+  habits: [
+    {
+      id: 'q4oqRZl4KtI',
+      start: 1,
+      title: 'Good Habits for Kids',
+    },
+    // Add more good habits videos below:
+    // { id: 'VIDEO_ID', start: 0, title: 'Video Title' },
+  ],
+};
+
+/* ─── STATE ─── */
+let player       = null;
+let apiReady     = false;
+let currentCat   = 'language';
+let currentIndex = 0;
+let isPlaying    = false;
+let progressTimer = null;
+
+/* ─── YT API READY ─── */
+function onYouTubeIframeAPIReady() {
+  apiReady = true;
+  player = new YT.Player('yt-player', {
+    videoId: PLAYLISTS[currentCat][0].id,
+    playerVars: {
+      rel:           0,   // no unrelated recommendations
+      controls:      0,   // hide YouTube controls (we use our own)
+      modestbranding:1,
+      iv_load_policy:3,   // no annotations
+      disablekb:     1,
+      playsinline:   1,
+      fs:            0,   // no fullscreen button (use browser fullscreen)
+      start: PLAYLISTS[currentCat][0].start || 0,
+    },
+    events: {
+      onReady:       onPlayerReady,
+      onStateChange: onPlayerStateChange,
+    },
+  });
+}
+
+function onPlayerReady() {
+  renderPlaylist();
+  updateInfo();
+  updateOverlay(true);
+}
+
+function onPlayerStateChange(e) {
+  if (e.data === YT.PlayerState.PLAYING) {
+    isPlaying = true;
+    updatePlayPauseIcon();
+    hideOverlay();
+    startProgressTimer();
+  } else if (e.data === YT.PlayerState.PAUSED) {
+    isPlaying = false;
+    updatePlayPauseIcon();
+  } else if (e.data === YT.PlayerState.ENDED) {
+    isPlaying = false;
+    updatePlayPauseIcon();
+    stopProgressTimer();
+    // Auto-advance
+    const list = PLAYLISTS[currentCat];
+    if (currentIndex < list.length - 1) {
+      currentIndex++;
+      loadCurrent();
+    } else {
+      // Loop back to first
+      currentIndex = 0;
+      loadCurrent();
+    }
+  } else if (e.data === YT.PlayerState.BUFFERING) {
+    // still counts as "playing" intent
+  }
+}
+
+/* ─── LOAD VIDEO ─── */
+function loadCurrent(autoplay = true) {
+  const v = PLAYLISTS[currentCat][currentIndex];
+  player.loadVideoById({ videoId: v.id, startSeconds: v.start || 0 });
+  if (!autoplay) player.pauseVideo();
+  updateInfo();
+  renderPlaylist();
+  updateOverlay(false);
+}
+
+/* ─── CONTROLS ─── */
+function overlayPlay() {
+  if (!player) return;
+  player.playVideo();
+}
+
+function togglePlay() {
+  if (!player) return;
+  if (isPlaying) { player.pauseVideo(); }
+  else           { player.playVideo();  }
+}
+
+function prevVideo() {
+  const list = PLAYLISTS[currentCat];
+  currentIndex = (currentIndex - 1 + list.length) % list.length;
+  loadCurrent();
+}
+
+function nextVideo() {
+  const list = PLAYLISTS[currentCat];
+  currentIndex = (currentIndex + 1) % list.length;
+  loadCurrent();
+}
+
+function seekClick(e) {
+  if (!player) return;
+  const track = document.getElementById('progressTrack');
+  const rect = track.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  const dur = player.getDuration() || 0;
+  player.seekTo(pct * dur, true);
+}
+
+/* ─── CATEGORY SWITCH ─── */
+function switchCat(cat) {
+  if (cat === currentCat) return;
+  currentCat = cat;
+  currentIndex = 0;
+  // Update tab styles
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+  // Update playlist header
+  const headers = { language: '🗣️ Language Playlist', habits: '🌟 Good Habits Playlist' };
+  document.getElementById('playlistHeader').textContent = headers[cat];
+  // Load first video paused
+  if (player && apiReady) {
+    loadCurrent(false);
+    updateOverlay(true);
+  }
+}
+
+/* ─── PLAYLIST RENDER ─── */
+function renderPlaylist() {
+  const list = PLAYLISTS[currentCat];
+  const el = document.getElementById('playlistEl');
+  el.innerHTML = '';
+  list.forEach((v, i) => {
+    const item = document.createElement('div');
+    item.className = 'pl-item' + (currentCat === 'habits' ? ' habits-item' : '') + (i === currentIndex ? ' active' : '');
+    item.onclick = () => { currentIndex = i; loadCurrent(); };
+    item.innerHTML = `
+      <div class="pl-thumb">
+        <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="" loading="lazy" />
+        <div class="pl-now">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+      <div class="pl-meta">
+        <div class="pl-num">Video ${i + 1}</div>
+        <div class="pl-title">${v.title}</div>
+      </div>`;
+    el.appendChild(item);
+  });
+}
+
+/* ─── INFO STRIP ─── */
+function updateInfo() {
+  const list = PLAYLISTS[currentCat];
+  const v    = list[currentIndex];
+  document.getElementById('viTitle').textContent    = v.title;
+  document.getElementById('viCounter').textContent  = `${currentIndex + 1} / ${list.length}`;
+  const badge = document.getElementById('viBadge');
+  badge.textContent = currentCat === 'language' ? 'Language' : 'Good Habits';
+  badge.className   = 'vi-badge' + (currentCat === 'habits' ? ' habits' : '');
+}
+
+/* ─── OVERLAY ─── */
+function updateOverlay(show) {
+  const ov = document.getElementById('playerOverlay');
+  const v  = PLAYLISTS[currentCat][currentIndex];
+  document.getElementById('overlayTitle').textContent = v.title;
+  ov.classList.toggle('show', show);
+}
+function hideOverlay() {
+  document.getElementById('playerOverlay').classList.remove('show');
+}
+
+/* ─── PLAY/PAUSE ICON ─── */
+function updatePlayPauseIcon() {
+  document.getElementById('iconPlay').style.display  = isPlaying ? 'none'  : 'block';
+  document.getElementById('iconPause').style.display = isPlaying ? 'block' : 'none';
+}
+
+/* ─── PROGRESS BAR ─── */
+function startProgressTimer() {
+  stopProgressTimer();
+  progressTimer = setInterval(tickProgress, 750);
+}
+function stopProgressTimer() {
+  if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+}
+function tickProgress() {
+  if (!player || !player.getCurrentTime) return;
+  const cur = player.getCurrentTime() || 0;
+  const dur = player.getDuration() || 1;
+  const pct = (cur / dur) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('timeCur').textContent = fmtTime(cur);
+  document.getElementById('timeDur').textContent = fmtTime(dur);
+}
+function fmtTime(s) {
+  s = Math.floor(s);
+  const m = Math.floor(s / 60);
+  const ss = String(s % 60).padStart(2, '0');
+  return `${m}:${ss}`;
+}
+
+/* ─── INIT PLAYLIST ON LOAD ─── */
+window.addEventListener('DOMContentLoaded', () => {
+  renderPlaylist();
+  updateInfo();
+});
+</script>
+</body>
+</html>
