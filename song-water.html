@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Numzi – Water is Precious</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --ink:#3D2C1E;--cream:#FDF6E9;--warm:#E0CCA8;--orange:#E8844A;
+      --sky1:#87CEEB;--sky2:#B8E4F7;--sage:#7BBF8E;
+    }
+    html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
+    body{display:flex;flex-direction:column;background:#87CEEB}
+
+    /* ─── NAV ─── */
+    nav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 2rem;height:64px;flex-shrink:0;
+      background:rgba(253,246,233,.92);backdrop-filter:blur(8px);
+      border-bottom:2px solid var(--warm);z-index:200;position:relative;
+    }
+    .logo{line-height:0;overflow:visible}
+    .nav-links{display:flex;gap:.6rem}
+    .nav-links a{
+      font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--ink);
+      text-decoration:none;padding:.3rem .85rem;border-radius:8px;
+      transition:background .2s;white-space:nowrap;
+    }
+    .nav-links a:hover{background:var(--warm)}
+    .nav-links a.back{background:var(--orange);color:#fff;box-shadow:0 2px 0 #b85e28}
+
+    /* ─── SCENE ─── */
+    .scene{
+      flex:1;position:relative;overflow:hidden;
+      /* sky gradient animates day→dusk→day */
+      background:linear-gradient(180deg,#5BBDE8 0%,#A8DCF0 45%,#C8EDA0 45%,#7DC85A 60%,#5FAA3A 100%);
+    }
+
+    /* ── SUN ── */
+    .sun{
+      position:absolute;top:8%;right:12%;
+      width:90px;height:90px;
+      background:radial-gradient(circle,#FFE566 60%,#FFC107 100%);
+      border-radius:50%;
+      box-shadow:0 0 0 14px rgba(255,220,60,.3),0 0 0 28px rgba(255,220,60,.15);
+      animation:sunPulse 4s ease-in-out infinite;
+    }
+    @keyframes sunPulse{
+      0%,100%{box-shadow:0 0 0 14px rgba(255,220,60,.3),0 0 0 28px rgba(255,220,60,.15)}
+      50%{box-shadow:0 0 0 22px rgba(255,220,60,.4),0 0 0 44px rgba(255,220,60,.18)}
+    }
+    /* sun rays */
+    .sun-ray{
+      position:absolute;top:50%;left:50%;
+      width:6px;height:30px;background:rgba(255,230,80,.7);
+      border-radius:3px;transform-origin:top center;
+      animation:rayRotate 8s linear infinite;
+    }
+    @keyframes rayRotate{to{transform:rotate(360deg)}}
+    .sun-ray:nth-child(1){transform:rotate(0deg) translateY(-58px)}
+    .sun-ray:nth-child(2){transform:rotate(45deg) translateY(-58px)}
+    .sun-ray:nth-child(3){transform:rotate(90deg) translateY(-58px)}
+    .sun-ray:nth-child(4){transform:rotate(135deg) translateY(-58px)}
+    .sun-ray:nth-child(5){transform:rotate(180deg) translateY(-58px)}
+    .sun-ray:nth-child(6){transform:rotate(225deg) translateY(-58px)}
+    .sun-ray:nth-child(7){transform:rotate(270deg) translateY(-58px)}
+    .sun-ray:nth-child(8){transform:rotate(315deg) translateY(-58px)}
+
+    /* ── CLOUDS ── */
+    .cloud{
+      position:absolute;top:0;
+      display:flex;align-items:flex-end;
+      animation:cloudDrift linear infinite;
+    }
+    .cloud-body{
+      position:relative;
+      background:#fff;border-radius:50px;
+      box-shadow:0 4px 20px rgba(0,0,0,.08);
+    }
+    .cloud-body::before,.cloud-body::after{
+      content:'';position:absolute;background:#fff;border-radius:50%;
+    }
+    @keyframes cloudDrift{from{transform:translateX(110vw)}to{transform:translateX(-60vw)}}
+
+    /* cloud 1 */
+    .cloud1{top:7%;animation-duration:28s;animation-delay:-5s}
+    .cloud1 .cloud-body{width:120px;height:40px}
+    .cloud1 .cloud-body::before{width:60px;height:60px;top:-35px;left:15px}
+    .cloud1 .cloud-body::after{width:45px;height:45px;top:-25px;left:55px}
+
+    /* cloud 2 */
+    .cloud2{top:15%;animation-duration:22s;animation-delay:-14s}
+    .cloud2 .cloud-body{width:90px;height:30px;opacity:.85}
+    .cloud2 .cloud-body::before{width:45px;height:45px;top:-28px;left:10px}
+    .cloud2 .cloud-body::after{width:35px;height:35px;top:-20px;left:45px}
+
+    /* cloud 3 – rain cloud */
+    .cloud3{top:10%;left:30%;animation-duration:35s;animation-delay:-20s;z-index:5}
+    .cloud3 .cloud-body{width:140px;height:48px;background:#C8DDEF}
+    .cloud3 .cloud-body::before{width:70px;height:70px;top:-42px;left:18px;background:#C8DDEF}
+    .cloud3 .cloud-body::after{width:55px;height:55px;top:-32px;left:66px;background:#C8DDEF}
+
+    /* ── RAIN ── */
+    .rain-wrap{position:absolute;inset:0;pointer-events:none;z-index:6}
+    .rain-drop{
+      position:absolute;top:-20px;
+      width:3px;border-radius:99px;
+      background:linear-gradient(180deg,rgba(130,200,255,.9),rgba(80,160,230,.6));
+      animation:rainFall linear infinite;
+    }
+    @keyframes rainFall{
+      0%{transform:translateY(0) scaleY(1);opacity:.8}
+      80%{opacity:.7}
+      100%{transform:translateY(110vh) scaleY(1);opacity:0}
+    }
+
+    /* ── RIVER ── */
+    .river{
+      position:absolute;bottom:18%;left:0;right:0;
+      height:55px;overflow:hidden;
+    }
+    .river-body{
+      position:absolute;inset:0;
+      background:linear-gradient(90deg,
+        #4AABDE 0%,#5DC5F0 20%,#3A9FD0 40%,#5DC5F0 60%,#4AABDE 80%,#5DC5F0 100%);
+      background-size:200% 100%;
+      animation:riverFlow 3s linear infinite;
+      border-radius:6px 6px 0 0;
+    }
+    /* wave shimmer */
+    .river-body::after{
+      content:'';position:absolute;inset:0;
+      background:repeating-linear-gradient(90deg,
+        transparent 0px, transparent 30px,
+        rgba(255,255,255,.18) 30px, rgba(255,255,255,.18) 50px);
+      background-size:80px 100%;
+      animation:waveShimmer 2s linear infinite;
+    }
+    @keyframes riverFlow{0%{background-position:0% 0%}100%{background-position:-200% 0%}}
+    @keyframes waveShimmer{0%{background-position:0}100%{background-position:80px}}
+
+    /* ── GRASS + HILLS ── */
+    .hills{
+      position:absolute;bottom:14%;left:0;right:0;
+      height:90px;
+    }
+    .hill{
+      position:absolute;bottom:0;
+      border-radius:50% 50% 0 0;
+    }
+    .hill1{left:-5%;width:55%;height:90px;background:#6DC84A}
+    .hill2{right:-5%;width:60%;height:75px;background:#5FAA3A}
+    .hill3{left:25%;width:50%;height:60px;background:#7DC85A}
+
+    /* ── FLOWERS ── */
+    .flower{position:absolute;bottom:14%;animation:flowerBob 3s ease-in-out infinite alternate}
+    @keyframes flowerBob{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+    .flower-stem{width:4px;height:32px;background:#5FAA3A;border-radius:2px;margin:0 auto}
+    .flower-head{
+      width:28px;height:28px;border-radius:50%;
+      position:relative;display:flex;align-items:center;justify-content:center;
+    }
+    .flower-head::before{
+      content:'';position:absolute;width:100%;height:100%;
+      border-radius:50%;background:inherit;
+      box-shadow:0 0 0 8px;filter:brightness(1.1);
+      opacity:.5;
+    }
+    .flower-center{width:10px;height:10px;border-radius:50%;background:#FFE566;position:relative;z-index:1}
+
+    /* ── WATER DROP CHARACTER ── */
+    .droppy{
+      position:absolute;bottom:28%;left:15%;
+      animation:droppyBounce 1.8s ease-in-out infinite, droppySway 5s ease-in-out infinite;
+      z-index:10;
+    }
+    @keyframes droppyBounce{
+      0%,100%{transform:translateY(0) scaleY(1) scaleX(1)}
+      45%{transform:translateY(-28px) scaleY(1.05) scaleX(.95)}
+      55%{transform:translateY(-30px) scaleY(1.05) scaleX(.95)}
+      90%{transform:translateY(-3px) scaleY(.9) scaleX(1.08)}
+    }
+    @keyframes droppySway{
+      0%,100%{left:12%} 50%{left:18%}
+    }
+    .drop-shape{
+      width:70px;height:88px;
+      background:radial-gradient(circle at 38% 38%, #90D8F8, #3AABDF 55%, #1A85BF);
+      border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+      position:relative;
+      box-shadow:inset -6px -6px 14px rgba(0,0,0,.18),inset 4px 4px 10px rgba(255,255,255,.4),0 8px 20px rgba(30,120,200,.35);
+    }
+    /* droppy eyes */
+    .drop-eye{
+      position:absolute;top:35%;
+      width:14px;height:16px;background:#fff;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .drop-eye::after{
+      content:'';width:7px;height:7px;background:#1a3a5a;border-radius:50%;
+    }
+    .drop-eye.left{left:22%}
+    .drop-eye.right{right:22%}
+    /* shine */
+    .drop-shine{
+      position:absolute;top:14%;left:22%;
+      width:14px;height:22px;background:rgba(255,255,255,.55);
+      border-radius:50%;transform:rotate(-20deg);
+    }
+    /* smile */
+    .drop-smile{
+      position:absolute;bottom:22%;left:50%;transform:translateX(-50%);
+      width:28px;height:14px;
+      border:3px solid rgba(20,80,140,.55);
+      border-top:none;border-radius:0 0 20px 20px;
+    }
+    /* arms */
+    .drop-arm{
+      position:absolute;top:45%;width:18px;height:5px;
+      background:#3AABDF;border-radius:3px;
+    }
+    .drop-arm.left{left:-14px;transform:rotate(20deg)}
+    .drop-arm.right{right:-14px;transform:rotate(-20deg)}
+
+    /* ── SPLASH DROPS ── */
+    .splash{
+      position:absolute;
+      width:12px;height:16px;
+      background:radial-gradient(circle at 40% 30%,#C8EEFF,#5DC5F0 70%);
+      border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+      animation:splashAnim linear infinite;
+      opacity:.85;z-index:7;
+    }
+    @keyframes splashAnim{
+      0%{transform:translateY(0) rotate(0deg);opacity:.9}
+      100%{transform:translateY(90px) rotate(20deg);opacity:0}
+    }
+
+    /* ── FLOATING LEAVES ── */
+    .leaf{
+      position:absolute;
+      width:24px;height:14px;
+      background:#7DC85A;border-radius:60% 40% 60% 40%;
+      opacity:.8;
+      animation:leafFloat linear infinite;
+    }
+    @keyframes leafFloat{
+      0%{transform:translate(0,0) rotate(0deg);opacity:.8}
+      50%{transform:translate(-20px,-15px) rotate(30deg);opacity:.9}
+      100%{transform:translate(5px,40px) rotate(-20deg);opacity:0}
+    }
+
+    /* ── EARTH ── */
+    .earth{
+      position:absolute;top:10%;left:10%;
+      width:72px;height:72px;
+      background:radial-gradient(circle at 38% 38%,#7DC85A,#3a9a2a 50%,#1a6a10);
+      border-radius:50%;
+      box-shadow:0 4px 18px rgba(0,0,0,.25);
+      animation:earthSpin 20s linear infinite;
+      overflow:hidden;z-index:4;
+    }
+    .earth::before{/* ocean patch */
+      content:'';position:absolute;
+      top:20%;left:15%;width:55%;height:55%;
+      background:radial-gradient(circle,#5DC5F0,#3AABDF);
+      border-radius:60% 40% 50% 50%;
+    }
+    .earth::after{/* cloud highlight */
+      content:'';position:absolute;
+      top:55%;left:55%;width:30%;height:20%;
+      background:rgba(255,255,255,.55);border-radius:50%;
+    }
+    @keyframes earthSpin{to{filter:hue-rotate(15deg)}}
+    .earth-label{
+      position:absolute;top:10%;left:10%;
+      width:72px;text-align:center;
+      margin-top:76px;
+      font-family:'Fredoka One',cursive;font-size:.8rem;color:#1a6a10;
+    }
+
+    /* ── TEXT MESSAGES ── */
+    .msg-layer{
+      position:absolute;inset:0;pointer-events:none;z-index:20;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .msg{
+      font-family:'Fredoka One',cursive;
+      font-size:clamp(1.4rem,4vw,2.4rem);
+      color:#fff;text-align:center;padding:.5rem 1.8rem;
+      border-radius:16px;line-height:1.3;
+      text-shadow:0 3px 12px rgba(0,0,70,.35),0 1px 4px rgba(0,0,0,.4);
+      background:rgba(30,100,180,.22);
+      backdrop-filter:blur(4px);
+      border:2px solid rgba(255,255,255,.35);
+      max-width:80vw;
+      animation:msgFade 3.2s ease-in-out both;
+      opacity:0;
+    }
+    @keyframes msgFade{
+      0%{opacity:0;transform:translateY(12px) scale(.95)}
+      15%,80%{opacity:1;transform:translateY(0) scale(1)}
+      100%{opacity:0;transform:translateY(-8px) scale(.97)}
+    }
+
+    /* ── PLAYER BAR ── */
+    .player-bar{
+      position:absolute;bottom:0;left:0;right:0;
+      background:rgba(30,20,10,.78);backdrop-filter:blur(10px);
+      border-top:2px solid rgba(255,255,255,.12);
+      padding:.7rem 1.5rem;display:flex;align-items:center;gap:1rem;
+      z-index:100;
+    }
+    .song-info{flex:1;min-width:0}
+    .song-title{
+      font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .song-sub{font-size:.75rem;color:rgba(255,255,255,.55)}
+    /* play/pause */
+    .pp-btn{
+      width:46px;height:46px;border-radius:50%;background:var(--orange);
+      border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 3px 12px rgba(232,132,74,.55);transition:transform .15s;flex-shrink:0;
+    }
+    .pp-btn:hover{transform:scale(1.1)}
+    .pp-btn:active{transform:scale(.95)}
+    /* progress */
+    .prog-wrap{flex:2;display:flex;flex-direction:column;gap:.25rem;min-width:0}
+    .prog-track{
+      height:5px;background:rgba(255,255,255,.2);border-radius:99px;cursor:pointer;
+    }
+    .prog-fill{height:100%;background:var(--orange);border-radius:99px;width:0%;transition:width .5s linear}
+    .prog-times{display:flex;justify-content:space-between;font-size:.72rem;color:rgba(255,255,255,.5)}
+    /* volume */
+    .vol-wrap{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+    .vol-icon{font-size:1rem;cursor:pointer;color:rgba(255,255,255,.7)}
+    .vol-slider{width:70px;accent-color:var(--orange);cursor:pointer}
+
+    @media(max-width:520px){
+      nav{padding:0 1rem;height:56px}
+      .vol-wrap{display:none}
+      .earth{width:52px;height:52px;top:8%;left:5%}
+      .droppy{bottom:26%}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <a href="index.html"><img src="assets/logo.png" alt="Numzi" height="52" style="display:block;filter:drop-shadow(1px 1px 2px rgba(0,0,0,.1))"/></a>
+  </div>
+  <div class="nav-links">
+    <a href="videos.html" class="back">◀ Videos</a>
+    <a href="game.html">🎮 Games</a>
+  </div>
+</nav>
+
+<!-- SCENE -->
+<div class="scene" id="scene">
+
+  <!-- Sun -->
+  <div class="sun">
+    <div class="sun-ray"></div><div class="sun-ray"></div><div class="sun-ray"></div>
+    <div class="sun-ray"></div><div class="sun-ray"></div><div class="sun-ray"></div>
+    <div class="sun-ray"></div><div class="sun-ray"></div>
+  </div>
+
+  <!-- Earth -->
+  <div class="earth"></div>
+  <div class="earth-label">Our Earth 🌍</div>
+
+  <!-- Clouds -->
+  <div class="cloud cloud1"><div class="cloud-body"></div></div>
+  <div class="cloud cloud2"><div class="cloud-body"></div></div>
+  <div class="cloud cloud3"><div class="cloud-body"></div></div>
+
+  <!-- Rain -->
+  <div class="rain-wrap" id="rainWrap"></div>
+
+  <!-- Splash drops -->
+  <div class="splash" style="left:42%;bottom:32%;animation-duration:1.8s;animation-delay:.3s;width:10px;height:14px"></div>
+  <div class="splash" style="left:47%;bottom:30%;animation-duration:2.1s;animation-delay:.9s"></div>
+  <div class="splash" style="left:53%;bottom:33%;animation-duration:1.6s;animation-delay:1.4s;width:8px;height:11px"></div>
+  <div class="splash" style="left:58%;bottom:31%;animation-duration:2.4s;animation-delay:.6s"></div>
+
+  <!-- River -->
+  <div class="river"><div class="river-body"></div></div>
+
+  <!-- Hills -->
+  <div class="hills">
+    <div class="hill hill1"></div>
+    <div class="hill hill2"></div>
+    <div class="hill hill3"></div>
+  </div>
+
+  <!-- Flowers -->
+  <div class="flower" style="left:30%;animation-delay:.4s">
+    <div class="flower-head" style="background:#FF8C69;box-shadow:0 0 0 6px rgba(255,140,105,.4)"><div class="flower-center"></div></div>
+    <div class="flower-stem"></div>
+  </div>
+  <div class="flower" style="left:45%;animation-delay:1.1s">
+    <div class="flower-head" style="background:#FF6B9D;box-shadow:0 0 0 6px rgba(255,107,157,.4)"><div class="flower-center"></div></div>
+    <div class="flower-stem"></div>
+  </div>
+  <div class="flower" style="left:60%;animation-delay:.7s">
+    <div class="flower-head" style="background:#B59FD6;box-shadow:0 0 0 6px rgba(181,159,214,.4)"><div class="flower-center"></div></div>
+    <div class="flower-stem"></div>
+  </div>
+  <div class="flower" style="left:72%;animation-delay:1.5s">
+    <div class="flower-head" style="background:#F5C842;box-shadow:0 0 0 6px rgba(245,200,66,.4)"><div class="flower-center"></div></div>
+    <div class="flower-stem"></div>
+  </div>
+
+  <!-- Floating leaves -->
+  <div class="leaf" style="left:35%;top:55%;animation-duration:6s;animation-delay:0s;transform:rotate(20deg)"></div>
+  <div class="leaf" style="left:65%;top:48%;animation-duration:8s;animation-delay:2s;transform:rotate(-15deg)"></div>
+  <div class="leaf" style="left:80%;top:60%;animation-duration:7s;animation-delay:4s;transform:rotate(35deg)"></div>
+
+  <!-- Water drop character -->
+  <div class="droppy" id="droppy">
+    <div class="drop-shape">
+      <div class="drop-shine"></div>
+      <div class="drop-eye left"></div>
+      <div class="drop-eye right"></div>
+      <div class="drop-smile"></div>
+      <div class="drop-arm left"></div>
+      <div class="drop-arm right"></div>
+    </div>
+  </div>
+
+  <!-- Text message overlay -->
+  <div class="msg-layer">
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <!-- Player bar -->
+  <div class="player-bar">
+    <button class="pp-btn" id="ppBtn" onclick="togglePlay()">
+      <svg id="iPlay"  width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="iPause" width="22" height="22" viewBox="0 0 24 24" fill="#fff" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <div class="song-info">
+      <div class="song-title">💧 Water is Precious, Water is Less</div>
+      <div class="song-sub">Children's Learning Song</div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-track" id="progTrack" onclick="seekAudio(event)">
+        <div class="prog-fill" id="progFill"></div>
+      </div>
+      <div class="prog-times">
+        <span id="tCur">0:00</span>
+        <span id="tDur">0:00</span>
+      </div>
+    </div>
+    <div class="vol-wrap">
+      <span class="vol-icon" onclick="toggleMute()">🔊</span>
+      <input class="vol-slider" type="range" min="0" max="1" step="0.05" value="1" oninput="setVol(this.value)"/>
+    </div>
+  </div>
+
+</div><!-- /scene -->
+
+<!-- Audio -->
+<audio id="audio" src="assets/water-song.mp3" preload="auto"></audio>
+
+<script>
+/* ── Audio controls ── */
+const audio = document.getElementById('audio');
+const ppBtn = document.getElementById('ppBtn');
+const iPlay = document.getElementById('iPlay');
+const iPause= document.getElementById('iPause');
+let muted = false;
+
+function togglePlay(){
+  if(audio.paused){ audio.play(); } else { audio.pause(); }
+}
+function setVol(v){ audio.volume = v; }
+function toggleMute(){ muted=!muted; audio.muted=muted; }
+function seekAudio(e){
+  const t=document.getElementById('progTrack');
+  const r=t.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+  audio.currentTime=pct*(audio.duration||0);
+}
+function fmt(s){s=Math.floor(s);return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);}
+
+audio.addEventListener('play', ()=>{
+  iPlay.style.display='none'; iPause.style.display='block';
+});
+audio.addEventListener('pause', ()=>{
+  iPlay.style.display='block'; iPause.style.display='none';
+});
+audio.addEventListener('timeupdate',()=>{
+  const p=(audio.currentTime/(audio.duration||1))*100;
+  document.getElementById('progFill').style.width=p+'%';
+  document.getElementById('tCur').textContent=fmt(audio.currentTime);
+});
+audio.addEventListener('loadedmetadata',()=>{
+  document.getElementById('tDur').textContent=fmt(audio.duration);
+});
+
+/* ── Rain drops ── */
+(function buildRain(){
+  const wrap=document.getElementById('rainWrap');
+  for(let i=0;i<55;i++){
+    const d=document.createElement('div');
+    d.className='rain-drop';
+    d.style.left=Math.random()*100+'%';
+    const h=Math.random()*18+8; // 8–26px
+    d.style.height=h+'px';
+    const dur=Math.random()*0.8+0.9; // 0.9–1.7s
+    d.style.animationDuration=dur+'s';
+    d.style.animationDelay=-(Math.random()*dur)+'s';
+    d.style.opacity=0.55+Math.random()*.35;
+    wrap.appendChild(d);
+  }
+})();
+
+/* ── Rotating messages ── */
+const MSGS=[
+  '💧 Water is Precious!',
+  '🌍 Save Every Drop!',
+  '🚿 Turn Off the Tap!',
+  '🌊 Protect Our Oceans',
+  '🌱 Water Gives Life!',
+  '🪣 Don\'t Waste Water!',
+  '💧 Water is Less...',
+  '🌧️ Rainwater is a Gift!',
+  '🐟 Fish Need Clean Water!',
+  '🌸 Plants Love Water Too!',
+];
+let mi=0;
+const msgEl=document.getElementById('msg');
+
+function showNextMsg(){
+  msgEl.style.animation='none';
+  msgEl.textContent=MSGS[mi%MSGS.length];
+  void msgEl.offsetWidth; // reflow
+  msgEl.style.animation='msgFade 3.2s ease-in-out both';
+  mi++;
+}
+showNextMsg();
+setInterval(showNextMsg,3400);
+
+/* ── Droppy moves toward river when playing ── */
+const droppy=document.getElementById('droppy');
+audio.addEventListener('play',()=>{
+  droppy.style.animationPlayState='running';
+});
+audio.addEventListener('pause',()=>{
+  droppy.style.animationPlayState='paused';
+});
+</script>
+</body>
+</html>

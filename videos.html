@@ -106,6 +106,47 @@
       box-shadow: 0 3px 0 #4fa070;
     }
     .cat-tab[data-cat="habits"]:hover { border-color: var(--sage); color: var(--sage); }
+    .cat-tab[data-cat="songs"].active {
+      background: var(--lavender); border-color: var(--lavender); box-shadow: 0 3px 0 #7a5fb0;
+    }
+    .cat-tab[data-cat="songs"]:hover { border-color: var(--lavender); color: var(--lavender); }
+
+    /* ─── SONGS GRID ─── */
+    .songs-section { display: none; }
+    .songs-section.active { display: block; }
+    .songs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.2rem;
+      padding-top: .5rem;
+    }
+    .song-card {
+      background: var(--cream);
+      border: 2.5px solid var(--warm);
+      border-radius: 18px;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--ink);
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+      box-shadow: 0 4px 0 var(--warm);
+      display: flex; flex-direction: column;
+    }
+    .song-card:hover { transform: translateY(-5px); box-shadow: 0 10px 0 var(--warm); border-color: var(--lavender); }
+    .song-card-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      position: relative; overflow: hidden;
+    }
+    .song-card-body { padding: .9rem 1rem 1.1rem; }
+    .song-card-title { font-family: 'Fredoka One', cursive; font-size: 1.1rem; margin-bottom: .25rem; }
+    .song-card-sub { font-size: .82rem; color: var(--brown); font-weight: 700; }
+    .song-card-tag {
+      display: inline-block; margin-top: .5rem;
+      font-family: 'Fredoka One', cursive; font-size: .75rem;
+      background: var(--lavender); color: #fff;
+      padding: .15rem .65rem; border-radius: 99px;
+    }
 
     /* ─── MAIN AREA ─── */
     .main-area {
@@ -391,6 +432,7 @@
     <span class="cat-label">Category:</span>
     <button class="cat-tab active" data-cat="language" onclick="switchCat('language')">🗣️ Language</button>
     <button class="cat-tab" data-cat="habits" onclick="switchCat('habits')">🌟 Good Habits</button>
+    <button class="cat-tab" data-cat="songs" onclick="switchCat('songs')">🎵 Songs</button>
   </div>
 
   <!-- Main area -->
@@ -458,6 +500,30 @@
     </div>
 
   </div>
+
+  <!-- ─── SONGS SECTION ─── -->
+  <div class="songs-section" id="songsSec">
+    <div class="songs-grid">
+
+      <!-- Water Song -->
+      <a class="song-card" href="song-water.html">
+        <div class="song-card-thumb" style="background:linear-gradient(135deg,#5BBDE8,#3AABDF 50%,#7DC85A)">
+          <span style="filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))">💧</span>
+          <span style="position:absolute;font-size:2.2rem;opacity:.4;right:10%;bottom:10%">🌍</span>
+          <span style="position:absolute;font-size:1.6rem;opacity:.5;left:8%;top:10%">🌧️</span>
+        </div>
+        <div class="song-card-body">
+          <div class="song-card-title">Water is Precious, Water is Less</div>
+          <div class="song-card-sub">Children's Learning Song · Animated</div>
+          <div class="song-card-tag">🎵 Animated Song</div>
+        </div>
+      </a>
+
+      <!-- Placeholder – add more songs here -->
+
+    </div>
+  </div>
+
 </div>
 
 <!-- YouTube IFrame API -->
@@ -599,13 +665,26 @@ function switchCat(cat) {
   currentIndex = 0;
   // Update tab styles
   document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
-  // Update playlist header
-  const headers = { language: '🗣️ Language Playlist', habits: '🌟 Good Habits Playlist' };
-  document.getElementById('playlistHeader').textContent = headers[cat];
-  // Load first video paused
-  if (player && apiReady) {
-    loadCurrent(false);
-    updateOverlay(true);
+
+  const mainArea  = document.querySelector('.main-area');
+  const songsSec  = document.getElementById('songsSec');
+
+  if (cat === 'songs') {
+    // Show songs grid, hide video player
+    mainArea.style.display = 'none';
+    songsSec.classList.add('active');
+  } else {
+    // Show video player, hide songs grid
+    mainArea.style.display = '';
+    songsSec.classList.remove('active');
+    // Update playlist header
+    const headers = { language: '🗣️ Language Playlist', habits: '🌟 Good Habits Playlist' };
+    document.getElementById('playlistHeader').textContent = headers[cat];
+    // Load first video paused
+    if (player && apiReady) {
+      loadCurrent(false);
+      updateOverlay(true);
+    }
   }
 }
 
