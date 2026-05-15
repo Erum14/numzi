@@ -659,9 +659,10 @@ function seekClick(e) {
 }
 
 /* ─── CATEGORY SWITCH ─── */
-function switchCat(cat) {
+function switchCat(cat, skipHash) {
   if (cat === currentCat) return;
   currentCat = cat;
+  if (!skipHash) location.hash = cat;
   currentIndex = 0;
   // Update tab styles
   document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
@@ -766,6 +767,11 @@ function fmtTime(s) {
 
 /* ─── INIT PLAYLIST ON LOAD ─── */
 window.addEventListener('DOMContentLoaded', () => {
+  // Restore tab from URL hash
+  const hash = location.hash.replace('#', '');
+  if (hash === 'habits' || hash === 'songs') {
+    switchCat(hash, true);
+  }
   renderPlaylist();
   updateInfo();
 });

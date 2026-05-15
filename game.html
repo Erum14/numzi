@@ -405,6 +405,7 @@ function launchConfetti() {
 function switchGame(name) {
   document.querySelectorAll('.game-tab').forEach(t=>t.classList.toggle('active', t.dataset.game===name));
   document.querySelectorAll('.game-section').forEach(s=>s.classList.toggle('active', s.id==='sec-'+name));
+  location.hash = name;
 }
 
 /* ════════════════════════════════════
@@ -616,6 +617,11 @@ function clayCount() {
 
 /* ─── INIT ─── */
 buildRound();
+// Restore tab from URL hash on load
+(function() {
+  const hash = location.hash.replace('#', '');
+  if (hash === 'clay') switchGame('clay');
+})();
 
 /* ════════════════════════════════════
    KEYBOARD CONTROLS
