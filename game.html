@@ -661,13 +661,6 @@ document.addEventListener('keydown', e => {
         const cur = dots.findIndex(d => d.classList.contains('selected'));
         const next = (cur + (e.key === 'ArrowDown' ? 1 : -1) + dots.length) % dots.length;
         dots[next].click();
-        // Recolor all balls on the board to the new color
-        const newColor = CLAY_COLORS[next];
-        const ballEls = document.querySelectorAll('#clayBoard .clay-ball');
-        ballEls.forEach(b => {
-          b.style.background = `radial-gradient(circle at 35% 35%, ${newColor.light}, ${newColor.mid} 55%, ${newColor.dark})`;
-        });
-        clayBalls = clayBalls.map(() => newColor);
         break;
       }
 
