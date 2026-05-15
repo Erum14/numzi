@@ -616,6 +616,72 @@ function clayCount() {
 
 /* ─── INIT ─── */
 buildRound();
+
+/* ════════════════════════════════════
+   KEYBOARD CONTROLS
+   Clay Counting (active when sec-clay visible):
+     +  / = / →      → Add ball
+     -  / Backspace / ← → Remove ball
+     Enter / Space   → Count!
+     Escape          → Clear
+     1–7             → Pick color
+   Quiz (active when sec-quiz visible):
+     → / Space       → Next round
+════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  // Don't fire when typing in an input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  const clayActive = document.getElementById('sec-clay').classList.contains('active');
+  const quizActive = document.getElementById('sec-quiz').classList.contains('active');
+
+  if (clayActive) {
+    switch (e.key) {
+      case '+':
+      case '=':
+      case 'ArrowRight':
+        e.preventDefault(); clayAdd(); break;
+
+      case '-':
+      case '_':
+      case 'Backspace':
+      case 'ArrowLeft':
+        e.preventDefault(); clayRemove(); break;
+
+      case 'Enter':
+        e.preventDefault(); clayCount(); break;
+
+      case 'Escape':
+        e.preventDefault(); clayClear(); break;
+
+      case '1': case '2': case '3': case '4':
+      case '5': case '6': case '7': {
+        const idx = parseInt(e.key) - 1;
+        const dots = document.querySelectorAll('.color-dot');
+        if (dots[idx]) { dots[idx].click(); }
+        break;
+      }
+    }
+    return;
+  }
+
+  if (quizActive) {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      nextRound();
+    }
+  }
+});
+
+/* ─── Show keyboard hint on clay tab ─── */
+(function addKeyHint() {
+  const wrap = document.querySelector('.clay-wrap');
+  if (!wrap) return;
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:.78rem;color:var(--brown);text-align:center;opacity:.7;font-weight:700;margin-top:-.4rem';
+  hint.innerHTML = '⌨️ Keys: <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">+</kbd> add &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">-</kbd> remove &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Enter</kbd> count &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Esc</kbd> clear &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">1–7</kbd> color';
+  wrap.appendChild(hint);
+})();
 </script>
 </body>
 </html>
