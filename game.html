@@ -659,7 +659,7 @@ document.addEventListener('keydown', e => {
         e.preventDefault();
         const dots = [...document.querySelectorAll('.color-dot')];
         const cur = dots.findIndex(d => d.classList.contains('selected'));
-        const next = (cur + (e.key === 'ArrowDown' ? 1 : -1) + dots.length) % dots.length;
+        const next = (cur + (e.key === 'ArrowUp' ? 1 : -1) + dots.length) % dots.length;
         dots[next].click();
         break;
       }
