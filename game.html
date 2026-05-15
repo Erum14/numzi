@@ -637,6 +637,10 @@ buildRound();
 document.addEventListener('keydown', e => {
   // Don't fire when typing in an input
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  // Blur any focused button so it doesn't also fire its own click on Enter/Space
+  if (document.activeElement && document.activeElement.tagName === 'BUTTON') {
+    document.activeElement.blur();
+  }
 
   const clayActive = document.getElementById('sec-clay').classList.contains('active');
   const quizActive = document.getElementById('sec-quiz').classList.contains('active');
