@@ -659,6 +659,8 @@ document.addEventListener('keydown', e => {
         e.preventDefault(); clayRemove(); break;
 
       case 'Enter':
+        e.preventDefault(); clayClear(); break;
+
       case ' ':
         e.preventDefault(); clayCount(); break;
 
@@ -700,7 +702,7 @@ document.addEventListener('keydown', e => {
   if (!wrap) return;
   const hint = document.createElement('div');
   hint.style.cssText = 'font-size:.78rem;color:var(--brown);text-align:center;opacity:.7;font-weight:700;margin-top:-.4rem';
-  hint.innerHTML = '⌨️ Keys: <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">+</kbd> add &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">-</kbd> remove &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Enter</kbd> count &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Esc</kbd> clear &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">↑↓</kbd> color &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">1–7</kbd> color';
+  hint.innerHTML = '⌨️ Keys: <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">+</kbd> add &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">-</kbd> remove &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Space</kbd> count &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Enter</kbd> clear &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">↑↓</kbd> color &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">1–7</kbd> color';
   wrap.appendChild(hint);
 })();
 </script>
