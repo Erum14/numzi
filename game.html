@@ -72,6 +72,10 @@
       background: #7BBF5E; border-color: #7BBF5E; box-shadow: 0 4px 0 #4e9e35;
     }
     .game-tab[data-game="clay"]:hover { border-color: #7BBF5E; color: #4e9e35; }
+    .game-tab[data-game="animal"].active {
+      background: #E87B7B; border-color: #E87B7B; box-shadow: 0 4px 0 #a84040;
+    }
+    .game-tab[data-game="animal"]:hover { border-color: #E87B7B; color: #a84040; }
 
     /* ─── SHARED PAGE WRAPPER ─── */
     .game-section { display: none; flex: 1; flex-direction: column; align-items: center; padding: 1.5rem 1.5rem 3rem; gap: 1.5rem; }
@@ -276,6 +280,91 @@
     .clay-btn.count-btn:hover { box-shadow: 0 6px 0 #8a3f18; }
     .clay-btn.clear-btn { background: #e8e0d4; color: var(--brown); }
 
+    /* ══ ANIMAL FREEZE DETECTIVE ══ */
+    .animal-wrap { display:flex; flex-direction:column; align-items:center; gap:1.1rem; width:100%; max-width:640px; }
+    .animal-title { font-family:'Fredoka One',cursive; font-size:clamp(1.5rem,4vw,2.1rem); color:var(--ink); text-align:center; }
+    .animal-title em { font-style:italic; color:#E87B7B; }
+
+    .round-badge {
+      font-family:'Fredoka One',cursive; font-size:.85rem;
+      padding:.3rem 1.1rem; border-radius:50px;
+      display:inline-block; letter-spacing:.04em;
+    }
+    .badge-sound    { background:#7BBFDB; color:#fff; }
+    .badge-category { background:#B59FD6; color:#fff; }
+    .badge-beanimal { background:#E8844A; color:#fff; }
+
+    .animal-question {
+      font-family:'Fredoka One',cursive;
+      font-size:clamp(1.2rem,3.5vw,1.6rem);
+      color:var(--ink); text-align:center; line-height:1.3;
+      min-height:2rem;
+    }
+
+    /* Clue pills revealed one by one */
+    .clue-row { display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; min-height:2.2rem; }
+    .clue-pill {
+      font-family:'Fredoka One',cursive; font-size:1rem;
+      background:var(--yellow); color:var(--ink);
+      padding:.3rem 1rem; border-radius:99px;
+      border:2px solid rgba(61,44,30,.15);
+      animation:pillPop .35s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes pillPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+    /* Big animal display (be-the-animal mode) */
+    .animal-big {
+      font-size:clamp(5rem,18vw,8rem); line-height:1;
+      animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+      filter:drop-shadow(0 6px 16px rgba(0,0,0,.18));
+    }
+    .animal-big-img { width:140px; height:140px; object-fit:contain;
+      animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+      filter:drop-shadow(0 6px 16px rgba(0,0,0,.2)); }
+    .be-instruction {
+      font-family:'Fredoka One',cursive; font-size:1.3rem;
+      color:var(--orange); text-align:center; line-height:1.4;
+    }
+
+    /* Choice buttons for animal game */
+    .animal-choices { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+    .animal-choice-btn {
+      width:130px; min-height:140px;
+      border:3.5px solid var(--warm); border-radius:20px;
+      background:var(--cream); cursor:pointer;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:.4rem; padding:.6rem .4rem;
+      transition:transform .15s, box-shadow .15s, border-color .2s;
+      box-shadow:0 4px 0 var(--warm);
+    }
+    .animal-choice-btn:hover:not(:disabled) { transform:translateY(-4px); box-shadow:0 8px 0 var(--warm); border-color:var(--coral); }
+    .animal-choice-btn:active:not(:disabled) { transform:translateY(2px); box-shadow:0 2px 0 var(--warm); }
+    .animal-choice-btn .a-emoji { font-size:3.2rem; line-height:1; }
+    .animal-choice-btn img { width:80px; height:80px; object-fit:contain; }
+    .animal-choice-btn .a-name { font-family:'Fredoka One',cursive; font-size:.95rem; color:var(--ink); }
+    .animal-choice-btn.a-correct { border-color:var(--sage); background:#E8F7EE; animation:correctPop .5s cubic-bezier(.34,1.56,.64,1); }
+    .animal-choice-btn.a-wrong   { border-color:var(--coral); background:#FDE8E8; animation:shake .4s ease; }
+    .animal-choice-btn:disabled  { cursor:default; }
+
+    /* Reveal area (shows animal after guess) */
+    .animal-reveal { display:flex; flex-direction:column; align-items:center; gap:.4rem; }
+    .reveal-label { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--brown); }
+
+    .animal-feedback { font-family:'Fredoka One',cursive; font-size:1.8rem; min-height:2.2rem; text-align:center; }
+    .animal-feedback.correct { color:var(--sage); }
+    .animal-feedback.wrong   { color:var(--coral); }
+    .animal-feedback.action  { color:var(--orange); }
+
+    .did-it-btn {
+      font-family:'Fredoka One',cursive; font-size:1.3rem;
+      background:#E87B7B; color:#fff; border:none;
+      border-radius:14px; padding:.8rem 2.5rem; cursor:pointer;
+      box-shadow:0 4px 0 #a84040; transition:transform .15s, box-shadow .15s;
+      animation:correctPop .5s cubic-bezier(.34,1.56,.64,1);
+    }
+    .did-it-btn:hover { transform:translateY(-3px); box-shadow:0 7px 0 #a84040; }
+    .did-it-btn:active { transform:translateY(2px); box-shadow:0 2px 0 #a84040; }
+
     /* ─── CONFETTI ─── */
     .confetti-wrap { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999; overflow:hidden; }
     .confetti-dot { position:absolute; border-radius:50%; animation:fall linear forwards; }
@@ -311,8 +400,9 @@
 
 <!-- ─── GAME SWITCHER ─── -->
 <div class="game-tabs">
-  <button class="game-tab active" data-game="quiz"  onclick="switchGame('quiz')">🔢 Charm Counting Quiz</button>
-  <button class="game-tab"        data-game="clay"  onclick="switchGame('clay')">🎨 Clay Counting</button>
+  <button class="game-tab active" data-game="quiz"   onclick="switchGame('quiz')">🔢 Charm Counting Quiz</button>
+  <button class="game-tab"        data-game="clay"   onclick="switchGame('clay')">🎨 Clay Counting</button>
+  <button class="game-tab"        data-game="animal" onclick="switchGame('animal')">🕵️ Animal Freeze Detective</button>
 </div>
 
 <!-- ════════════════════════════════════════
@@ -365,6 +455,48 @@
       <button class="clay-btn add-btn" onclick="clayAdd()">+</button>
       <button class="clay-btn count-btn" onclick="clayCount()">Count! 🔢</button>
       <button class="clay-btn clear-btn" onclick="clayClear()">Clear 🗑️</button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SECTION 3 — ANIMAL FREEZE DETECTIVE
+════════════════════════════════════════ -->
+<section class="game-section" id="sec-animal">
+  <div class="animal-wrap">
+    <div class="animal-title">🕵️ <em>Animal Freeze Detective!</em></div>
+
+    <div class="score-bar">
+      <div>🦁 Score: <span id="aScoreVal">0</span></div>
+      <div>🎯 Round: <span id="aRoundVal">1</span></div>
+    </div>
+
+    <!-- Mode badge -->
+    <div class="round-badge badge-sound" id="roundBadge">🎵 Sound Detective</div>
+
+    <!-- Question -->
+    <div class="animal-question" id="animalQuestion">Listen to the sound and find the animal!</div>
+
+    <!-- Clue pills row -->
+    <div class="clue-row" id="clueRow"></div>
+
+    <!-- Big animal (be-the-animal mode) -->
+    <div class="animal-reveal" id="animalReveal" style="display:none"></div>
+
+    <!-- Answer choices -->
+    <div class="animal-choices" id="animalChoices"></div>
+
+    <!-- Feedback -->
+    <div class="animal-feedback" id="animalFeedback"></div>
+
+    <!-- "I did it!" button (be-the-animal mode) -->
+    <div id="didItWrap" style="display:none">
+      <button class="did-it-btn" onclick="animalDidIt()">🙌 I did it!</button>
+    </div>
+
+    <!-- Next button -->
+    <div class="btn-row">
+      <button class="new-game-btn" id="animalNextBtn" onclick="animalNext()">Next ➜</button>
     </div>
   </div>
 </section>
@@ -615,12 +747,272 @@ function clayCount() {
   next();
 }
 
+/* ════════════════════════════════════
+   GAME 3 — ANIMAL FREEZE DETECTIVE
+════════════════════════════════════ */
+const ANIMALS = [
+  { name:'Frog',     img:'assets/charms/frog.png',     emoji:'🐸', sound:'Ribbit ribbit!',     habitat:'pond',    moves:['jumps','swims'],    trait:'green and slippery', cats:['jumps','water'] },
+  { name:'Cat',      img:'assets/charms/cat.png',       emoji:'🐱', sound:'Meow meow!',         habitat:'home',    moves:['sneaks','jumps'],   trait:'sneaky and soft',    cats:['sneaky','jumps','home'] },
+  { name:'Penguin',  img:'assets/charms/penguin.png',   emoji:'🐧', sound:'Squawk squawk!',     habitat:'ice',     moves:['waddles','swims'],  trait:'waddly and cold',    cats:['water','cold'] },
+  { name:'Ladybug',  img:'assets/charms/ladybug.png',   emoji:'🐞', sound:'Buzz buzz!',         habitat:'garden',  moves:['flies','crawls'],   trait:'spotty and tiny',    cats:['flies','garden'] },
+  { name:'Elephant', img:null, emoji:'🐘', sound:'Paaaah! Like a big trumpet!', habitat:'jungle', moves:['stomps','swims'], trait:'huge with a long trunk', cats:['big','jungle'] },
+  { name:'Lion',     img:null, emoji:'🦁', sound:'ROAR!',              habitat:'savanna', moves:['sneaks','runs'],    trait:'sneaky and fierce',  cats:['sneaky','jungle','roars'] },
+  { name:'Rabbit',   img:null, emoji:'🐇', sound:'Squeak squeak!',     habitat:'garden',  moves:['jumps','hops'],    trait:'fluffy with big ears',cats:['jumps','garden'] },
+  { name:'Dolphin',  img:null, emoji:'🐬', sound:'Click click click!', habitat:'ocean',   moves:['swims','leaps'],   trait:'clever and playful', cats:['water','jumps','ocean'] },
+  { name:'Owl',      img:null, emoji:'🦉', sound:'Hoot hoot!',         habitat:'forest',  moves:['flies','watches'], trait:'wise and silent',    cats:['flies','sneaky'] },
+  { name:'Bear',     img:null, emoji:'🐻', sound:'Grooowl!',           habitat:'forest',  moves:['stomps','swims'],  trait:'big and furry',      cats:['big','forest'] },
+  { name:'Kangaroo', img:null, emoji:'🦘', sound:'Boing boing!',       habitat:'outback', moves:['jumps','hops'],    trait:'bouncy with a pouch',cats:['jumps'] },
+  { name:'Snake',    img:null, emoji:'🐍', sound:'Hisssss!',           habitat:'jungle',  moves:['slithers'],        trait:'sneaky and silent',  cats:['sneaky','slithers'] },
+  { name:'Duck',     img:null, emoji:'🦆', sound:'Quack quack!',       habitat:'pond',    moves:['swims','flies'],   trait:'waddly and yellow',  cats:['water','flies','jumps'] },
+  { name:'Monkey',   img:null, emoji:'🐒', sound:'Ooh ooh aah aah!',   habitat:'jungle',  moves:['swings','jumps'],  trait:'cheeky and clever',  cats:['jumps','jungle'] },
+];
+
+const CATEGORIES = [
+  { q:'Which animal JUMPS? 🦘',          key:'jumps' },
+  { q:'Which one is SNEAKY? 🤫',          key:'sneaky' },
+  { q:'Who lives in WATER? 💧',           key:'water' },
+  { q:'Which animal can FLY? 🕊️',         key:'flies' },
+  { q:'Who is really BIG? 🐘',           key:'big' },
+  { q:'Who lives in the JUNGLE? 🌿',     key:'jungle' },
+  { q:'Which one ROARS? 🦁',             key:'roars' },
+  { q:'Who loves the GARDEN? 🌻',        key:'garden' },
+  { q:'Who swings and JUMPS? 🐒',        key:'jumps' },
+  { q:'Who lives in the FOREST? 🌲',     key:'forest' },
+];
+
+const BE_ACTIONS = {
+  jumps:    'Jump jump jump! 🦘',
+  sneaks:   'Sneak around on your tippy toes! 🤫',
+  swims:    'Swim your arms! 🏊',
+  flies:    'Flap your wings! 🐦',
+  waddles:  'Waddle side to side! 🐧',
+  stomps:   'Stomp your feet! 🐘',
+  slithers: 'Slither on the ground! 🐍',
+  hops:     'Hop hop hop! 🐇',
+  swings:   'Swing your arms! 🐒',
+  watches:  'Turn your head slowly and look around! 🦉',
+  leaps:    'Take a big leap! 🐬',
+  crawls:   'Crawl like a tiny bug! 🐞',
+};
+
+let aScore=0, aRound=1, aAnswered=false, aCurrentRoundType='sound';
+
+function animalEl(a) {
+  // Returns a DOM element for an animal (image or emoji)
+  if (a.img) {
+    const img=document.createElement('img');
+    img.src=a.img; img.alt=a.name; img.className='animal-big-img';
+    return img;
+  }
+  const span=document.createElement('div');
+  span.className='animal-big'; span.textContent=a.emoji;
+  return span;
+}
+
+function animalChoiceEl(a, onClick) {
+  const btn=document.createElement('button');
+  btn.className='animal-choice-btn';
+  if (a.img) {
+    const img=document.createElement('img'); img.src=a.img; img.alt=a.name; btn.appendChild(img);
+  } else {
+    const em=document.createElement('div'); em.className='a-emoji'; em.textContent=a.emoji; btn.appendChild(em);
+  }
+  const nm=document.createElement('div'); nm.className='a-name'; nm.textContent=a.name; btn.appendChild(nm);
+  btn.onclick=()=>onClick(a,btn);
+  return btn;
+}
+
+function pickWrongAnimals(correct, count) {
+  const pool=ANIMALS.filter(a=>a.name!==correct.name);
+  const out=[];
+  while(out.length<count && pool.length) {
+    const i=rand(0,pool.length-1);
+    out.push(pool.splice(i,1)[0]);
+  }
+  return out;
+}
+
+function shuffle(arr){ return arr.slice().sort(()=>Math.random()-.5); }
+
+/* ── Sound Detective Round ── */
+function buildSoundRound() {
+  aCurrentRoundType='sound';
+  aAnswered=false;
+  document.getElementById('roundBadge').className='round-badge badge-sound';
+  document.getElementById('roundBadge').textContent='🎵 Sound Detective';
+  document.getElementById('clueRow').innerHTML='';
+  document.getElementById('animalReveal').style.display='none';
+  document.getElementById('didItWrap').style.display='none';
+  document.getElementById('animalFeedback').textContent='';
+  document.getElementById('animalFeedback').className='animal-feedback';
+  document.getElementById('animalNextBtn').textContent='Skip ➜';
+
+  const correct=pick(ANIMALS);
+  document.getElementById('animalQuestion').textContent='🎵 Listen… what animal makes this sound?';
+
+  // Speak the sound after short delay
+  setTimeout(()=>speak(correct.sound, 0.85, 1.2), 400);
+
+  // Show clue pill after speaking
+  setTimeout(()=>{
+    const pill=document.createElement('div');
+    pill.className='clue-pill';
+    pill.textContent='"' + correct.sound + '"';
+    document.getElementById('clueRow').appendChild(pill);
+  }, 600);
+
+  // Build choices
+  const choices=shuffle([correct, ...pickWrongAnimals(correct,2)]);
+  const choicesEl=document.getElementById('animalChoices');
+  choicesEl.innerHTML='';
+  choices.forEach(a=>{
+    choicesEl.appendChild(animalChoiceEl(a, (picked,btn)=>handleSoundAnswer(picked,btn,correct)));
+  });
+}
+
+function handleSoundAnswer(picked, btn, correct) {
+  if(aAnswered) return;
+  aAnswered=true;
+  document.querySelectorAll('.animal-choice-btn').forEach(b=>b.disabled=true);
+  if(picked.name===correct.name) {
+    btn.classList.add('a-correct');
+    aScore++; document.getElementById('aScoreVal').textContent=aScore;
+    document.getElementById('animalFeedback').textContent='🌟 Yes! It\'s a '+correct.name+'!';
+    document.getElementById('animalFeedback').className='animal-feedback correct';
+    speak('Yes! It\'s a '+correct.name+'! Great detective work!', 0.85, 1.25);
+    launchConfetti();
+    // Show "now be the animal" prompt
+    setTimeout(()=>{
+      document.getElementById('animalFeedback').textContent='Now YOU be the '+correct.name+'!';
+      document.getElementById('animalFeedback').className='animal-feedback action';
+      const action=BE_ACTIONS[correct.moves[0]] || 'Move like a '+correct.name+'!';
+      const rev=document.getElementById('animalReveal');
+      rev.innerHTML='';
+      rev.appendChild(animalEl(correct));
+      const instr=document.createElement('div');
+      instr.className='be-instruction'; instr.textContent=action;
+      rev.appendChild(instr);
+      rev.style.display='flex'; rev.style.flexDirection='column'; rev.style.alignItems='center'; rev.style.gap='.5rem';
+      document.getElementById('didItWrap').style.display='block';
+      speak(action, 0.82, 1.2);
+    }, 1400);
+  } else {
+    btn.classList.add('a-wrong');
+    document.querySelectorAll('.animal-choice-btn').forEach(b=>{ if(b.querySelector('.a-name')?.textContent===correct.name) b.classList.add('a-correct'); });
+    document.getElementById('animalFeedback').textContent='💛 Try again! It was the '+correct.name+'!';
+    document.getElementById('animalFeedback').className='animal-feedback wrong';
+    speak('Oops! That was the '+correct.name+'! '+correct.sound, 0.85, 1.2);
+  }
+  aRound++; document.getElementById('aRoundVal').textContent=aRound;
+  document.getElementById('animalNextBtn').textContent='Next ➜';
+}
+
+/* ── Category / Twist Round ── */
+function buildCategoryRound() {
+  aCurrentRoundType='category';
+  aAnswered=false;
+  document.getElementById('roundBadge').className='round-badge badge-category';
+  document.getElementById('roundBadge').textContent='🔍 Category Twist';
+  document.getElementById('clueRow').innerHTML='';
+  document.getElementById('animalReveal').style.display='none';
+  document.getElementById('didItWrap').style.display='none';
+  document.getElementById('animalFeedback').textContent='';
+  document.getElementById('animalFeedback').className='animal-feedback';
+  document.getElementById('animalNextBtn').textContent='Skip ➜';
+
+  const cat=pick(CATEGORIES);
+  const matching=ANIMALS.filter(a=>a.cats.includes(cat.key));
+  if(matching.length===0){ buildSoundRound(); return; }
+
+  const correct=pick(matching);
+  document.getElementById('animalQuestion').textContent=cat.q;
+  speak(cat.q.replace(/[🦘🤫💧🕊️🐘🌿🦁🌻🐒🌲]/g,''), 0.85, 1.2);
+
+  const choices=shuffle([correct, ...pickWrongAnimals(correct,2)]);
+  const choicesEl=document.getElementById('animalChoices');
+  choicesEl.innerHTML='';
+  choices.forEach(a=>{
+    choicesEl.appendChild(animalChoiceEl(a,(picked,btn)=>{
+      if(aAnswered) return;
+      aAnswered=true;
+      document.querySelectorAll('.animal-choice-btn').forEach(b=>b.disabled=true);
+      if(picked.name===correct.name){
+        btn.classList.add('a-correct');
+        aScore++; document.getElementById('aScoreVal').textContent=aScore;
+        document.getElementById('animalFeedback').textContent='🌟 That\'s right! The '+correct.name+' '+cat.key+'s!';
+        document.getElementById('animalFeedback').className='animal-feedback correct';
+        speak('Yes! The '+correct.name+'! Great thinking!', 0.85, 1.25);
+        launchConfetti();
+      } else {
+        btn.classList.add('a-wrong');
+        document.querySelectorAll('.animal-choice-btn').forEach(b=>{ if(b.querySelector('.a-name')?.textContent===correct.name) b.classList.add('a-correct'); });
+        document.getElementById('animalFeedback').textContent='💛 Not quite! The '+correct.name+' was the answer!';
+        document.getElementById('animalFeedback').className='animal-feedback wrong';
+        speak('The '+correct.name+' was the answer!', 0.85, 1.2);
+      }
+      aRound++; document.getElementById('aRoundVal').textContent=aRound;
+      document.getElementById('animalNextBtn').textContent='Next ➜';
+    }));
+  });
+}
+
+/* ── Be the Animal Round ── */
+function buildBeAnimalRound() {
+  aCurrentRoundType='beanimal';
+  aAnswered=false;
+  document.getElementById('roundBadge').className='round-badge badge-beanimal';
+  document.getElementById('roundBadge').textContent='🎭 Be the Animal!';
+  document.getElementById('clueRow').innerHTML='';
+  document.getElementById('animalChoices').innerHTML='';
+  document.getElementById('animalFeedback').textContent='';
+  document.getElementById('animalFeedback').className='animal-feedback';
+  document.getElementById('animalNextBtn').textContent='Skip ➜';
+
+  const a=pick(ANIMALS);
+  const action=BE_ACTIONS[a.moves[0]] || 'Move like a '+a.name+'!';
+  document.getElementById('animalQuestion').textContent='You ARE the '+a.name+'!';
+
+  const rev=document.getElementById('animalReveal');
+  rev.innerHTML='';
+  rev.appendChild(animalEl(a));
+  const instr=document.createElement('div');
+  instr.className='be-instruction'; instr.textContent=action;
+  rev.appendChild(instr);
+  rev.style.display='flex'; rev.style.flexDirection='column'; rev.style.alignItems='center'; rev.style.gap='.5rem';
+  document.getElementById('didItWrap').style.display='block';
+
+  speak('You are the '+a.name+'! '+action, 0.82, 1.2);
+}
+
+function animalDidIt(){
+  aScore++; document.getElementById('aScoreVal').textContent=aScore;
+  document.getElementById('animalFeedback').textContent='🎉 Amazing! You\'re a great '+
+    (document.getElementById('animalQuestion').textContent.replace('You ARE the ','').replace('!',''))+' !';
+  document.getElementById('animalFeedback').className='animal-feedback correct';
+  document.getElementById('didItWrap').style.display='none';
+  document.getElementById('animalNextBtn').textContent='Next ➜';
+  speak('Amazing job! You\'re a star!', 0.85, 1.3);
+  launchConfetti();
+  aRound++; document.getElementById('aRoundVal').textContent=aRound;
+}
+
+/* ── Weighted next round ── */
+function animalNext(){
+  const r=Math.random();
+  if(r<0.45)      buildSoundRound();
+  else if(r<0.80) buildCategoryRound();
+  else            buildBeAnimalRound();
+}
+
 /* ─── INIT ─── */
 buildRound();
+buildSoundRound();   // pre-load animal game (hidden)
+
 // Restore tab from URL hash on load
 (function() {
   const hash = location.hash.replace('#', '');
-  if (hash === 'clay') switchGame('clay');
+  if (hash === 'clay')   switchGame('clay');
+  if (hash === 'animal') switchGame('animal');
 })();
 
 /* ════════════════════════════════════
