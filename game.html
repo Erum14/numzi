@@ -863,8 +863,8 @@
         </div>
       </div>
 
-      <!-- Mic button -->
-      <button class="baby-mic-btn" id="babyMicBtn" onclick="babyStartListening()">
+      <!-- Mic button — listener attached via JS in babyInit -->
+      <button class="baby-mic-btn" id="babyMicBtn">
         🎤 Tap &amp; Say the Answer!
       </button>
 
@@ -1794,6 +1794,12 @@ function babyInit() {
   bScore=0; bRound=1; bUsedIndices.clear();
   document.getElementById('babyScore').textContent='0';
   document.getElementById('babyRound').textContent='1';
+  // Attach mic listener fresh each init (avoids stale inline-onclick issues)
+  const mb=document.getElementById('babyMicBtn');
+  if(mb){
+    mb.replaceWith(mb.cloneNode(true)); // strip any old listeners
+    document.getElementById('babyMicBtn').addEventListener('click', babyStartListening);
+  }
   babyNewRound();
 }
 
@@ -1845,33 +1851,22 @@ function bSetMicStatus(msg) {
   if(el) el.textContent=msg;
 }
 
-async function babyStartListening() {
+function babyStartListening() {
   if(bAnswered || bListening) return;
 
   const SR = getBSR();
   if(!SR){
-    bSetMicStatus('🎹 No mic on this browser — use the text box below!');
+    bSetMicStatus('Mic not supported here — type the answer below!');
     return;
   }
 
-  // Step 1: explicitly request mic permission so Chrome shows its dialog
-  bSetMicStatus('🎙️ Asking for mic permission…');
-  let stream;
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({audio:true});
-  } catch(permErr) {
-    bSetMicStatus('🚫 Mic blocked — please type the answer below.');
-    return;
-  }
-  // Stop the stream immediately — SR will open its own
-  stream.getTracks().forEach(t=>t.stop());
-
-  // Step 2: now start recognition (permission is guaranteed granted)
+  // Change button immediately before any mic ops
   bListening=true;
   bUpdateMicUI();
   bSetMicStatus('🔴 Listening… say the baby name!');
 
   try {
+    if(bRecognition){ try{bRecognition.abort();}catch(e){} }
     bRecognition = new SR();
     bRecognition.lang='en-US';
     bRecognition.continuous=false;
@@ -1883,22 +1878,25 @@ async function babyStartListening() {
       bListening=false; bUpdateMicUI(); bSetMicStatus('');
       babyCheckAnswer(transcripts);
     };
-
     bRecognition.onerror=(e)=>{
       bListening=false; bUpdateMicUI();
-      if(e.error==='no-speech'){ bSetMicStatus('🤔 Nothing heard — tap again!'); return; }
-      if(e.error==='aborted'){ bSetMicStatus(''); return; }
-      bSetMicStatus('⚠️ Mic error ('+e.error+') — try typing below.');
+      if(e.error==='not-allowed'||e.error==='service-not-allowed')
+        bSetMicStatus('Mic permission denied — type below or allow mic in browser settings');
+      else if(e.error==='no-speech')
+        bSetMicStatus('Nothing heard — tap again or type!');
+      else if(e.error==='aborted')
+        bSetMicStatus('');
+      else
+        bSetMicStatus('Mic issue ('+e.error+') — type the answer below');
     };
-
     bRecognition.onend=()=>{
       if(bListening){ bListening=false; bUpdateMicUI(); bSetMicStatus(''); }
     };
 
     bRecognition.start();
-  } catch(err) {
+  } catch(err){
     bListening=false; bUpdateMicUI();
-    bSetMicStatus('⚠️ Could not start mic — try typing below.');
+    bSetMicStatus('Could not start mic: '+err.message+' — type below');
   }
 }
 
