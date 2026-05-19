@@ -1309,9 +1309,10 @@ function buildSoundRound() {
   const correct=pick(ANIMALS);
   document.getElementById('animalQuestion').textContent='🎵 Listen… what animal makes this sound?';
 
-  // Speak the question, then the animal sound once question finishes
+  // Only speak if the animal tab is actually visible
   setTimeout(() => {
     if (!window.speechSynthesis) return;
+    if (!document.getElementById('sec-animal').classList.contains('active')) return;
     window.speechSynthesis.cancel();
     const q = new SpeechSynthesisUtterance('Listen, what animal makes this sound?');
     const qMood = MOODS.question;
@@ -1475,7 +1476,6 @@ function animalNext(){
 
 /* ─── INIT ─── */
 buildRound();
-buildSoundRound();   // pre-load animal game (hidden)
 
 // Restore tab from URL hash on load
 (function() {
