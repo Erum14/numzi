@@ -735,7 +735,9 @@ function speak(text, moodOrRate='instruction', pitch) {
     ? MOODS[moodOrRate]
     : { rate: typeof moodOrRate === 'number' ? moodOrRate : 0.90,
         pitch: pitch || 1.0 };
-  const u = new SpeechSynthesisUtterance(text);
+  // Strip emojis so TTS doesn't read them as words (e.g. 🐦 → "bird")
+  const clean = text.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{2700}-\u{27BF}]/gu, '').trim();
+  const u = new SpeechSynthesisUtterance(clean);
   u.voice  = getBestVoice();
   u.rate   = profile.rate;
   u.pitch  = profile.pitch;
@@ -1101,7 +1103,7 @@ function buildSoundRound() {
   setTimeout(() => {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    const q = new SpeechSynthesisUtterance('Listen… what animal makes this sound?');
+    const q = new SpeechSynthesisUtterance('Listen, what animal makes this sound?');
     const qMood = MOODS.question;
     q.voice = getBestVoice(); q.rate = qMood.rate; q.pitch = qMood.pitch; q.volume = 1;
     q.onend = () => setTimeout(() => speak(correct.sound, 'excited'), 350);
