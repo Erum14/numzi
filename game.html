@@ -1883,7 +1883,7 @@ function babyStartListening() {
     if(bRecognition){ try{bRecognition.abort();}catch(e){} }
     bRecognition = new SR();
     bRecognition.lang='en-US';
-    bRecognition.continuous=false;
+    bRecognition.continuous=true;
     bRecognition.interimResults=true;
     bRecognition.maxAlternatives=5;
 
@@ -1893,9 +1893,24 @@ function babyStartListening() {
         if(e.results[i].isFinal) final += e.results[i][0].transcript;
         else interim += e.results[i][0].transcript;
       }
-      if(interim) bSetMicStatus('Hearing: "' + interim + '"…');
+      const heard = (final || interim).toLowerCase().trim();
+      if(heard) bSetMicStatus('Hearing: "' + (final||interim) + '"…');
+
+      // Check interim immediately so single words register fast
+      const a = bCurrent;
+      if(a && heard && a.accepts.some(ac => heard.includes(ac))){
+        clearTimeout(bTimeout);
+        try{ bRecognition.stop(); }catch(e){}
+        bListening=false; bUpdateMicUI();
+        bSetMicStatus('I heard: "' + (final||interim) + '"');
+        babyCheckAnswer([heard]);
+        return;
+      }
+
+      // Also accept final result even if no exact match (let babyCheckAnswer decide)
       if(final){
         clearTimeout(bTimeout);
+        try{ bRecognition.stop(); }catch(e){}
         bListening=false; bUpdateMicUI();
         bSetMicStatus('I heard: "' + final + '"');
         babyCheckAnswer([final.toLowerCase().trim()]);
