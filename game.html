@@ -864,8 +864,7 @@
         </div>
       </div>
 
-      <!-- Mic button — listener attached via JS in babyInit -->
-      <button class="baby-mic-btn" id="babyMicBtn">
+      <button class="baby-mic-btn" id="babyMicBtn" onclick="babyStartListening()">
         🎤 Tap &amp; Say the Answer!
       </button>
 
@@ -1853,18 +1852,23 @@ function bSetMicStatus(msg) {
 }
 
 function babyStartListening() {
-  if(bAnswered || bListening) return;
+  // Step 0 — always show something immediately so we know the click landed
+  const btn = document.getElementById('babyMicBtn');
+  if(btn){ btn.textContent='⏳ Starting…'; btn.classList.add('listening'); }
+
+  if(bAnswered){ if(btn){ btn.textContent='✅ Got it!'; btn.classList.remove('listening'); } return; }
+  if(bListening){ return; } // already running
 
   const SR = getBSR();
   if(!SR){
-    bSetMicStatus('Mic not supported here — type the answer below!');
+    bSetMicStatus('No mic support in this browser — type below!');
+    if(btn){ btn.textContent='🎤 Tap & Say the Answer!'; btn.classList.remove('listening'); }
     return;
   }
 
-  // Change button immediately before any mic ops
   bListening=true;
-  bUpdateMicUI();
-  bSetMicStatus('🔴 Listening… say the baby name!');
+  if(btn){ btn.textContent='🔴 Listening…'; }
+  bSetMicStatus('Say the baby name out loud!');
 
   try {
     if(bRecognition){ try{bRecognition.abort();}catch(e){} }
@@ -1882,13 +1886,13 @@ function babyStartListening() {
     bRecognition.onerror=(e)=>{
       bListening=false; bUpdateMicUI();
       if(e.error==='not-allowed'||e.error==='service-not-allowed')
-        bSetMicStatus('Mic permission denied — type below or allow mic in browser settings');
+        bSetMicStatus('Mic blocked — allow mic access or type below');
       else if(e.error==='no-speech')
-        bSetMicStatus('Nothing heard — tap again or type!');
+        bSetMicStatus('Nothing heard — tap again!');
       else if(e.error==='aborted')
         bSetMicStatus('');
       else
-        bSetMicStatus('Mic issue ('+e.error+') — type the answer below');
+        bSetMicStatus('Mic error: '+e.error+' — type below');
     };
     bRecognition.onend=()=>{
       if(bListening){ bListening=false; bUpdateMicUI(); bSetMicStatus(''); }
@@ -1897,7 +1901,7 @@ function babyStartListening() {
     bRecognition.start();
   } catch(err){
     bListening=false; bUpdateMicUI();
-    bSetMicStatus('Could not start mic: '+err.message+' — type below');
+    bSetMicStatus('Mic unavailable: '+err.message);
   }
 }
 
