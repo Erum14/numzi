@@ -1794,12 +1794,7 @@ function babyInit() {
   bScore=0; bRound=1; bUsedIndices.clear();
   document.getElementById('babyScore').textContent='0';
   document.getElementById('babyRound').textContent='1';
-  // Attach mic listener fresh each init (avoids stale inline-onclick issues)
-  const mb=document.getElementById('babyMicBtn');
-  if(mb){
-    mb.replaceWith(mb.cloneNode(true)); // strip any old listeners
-    document.getElementById('babyMicBtn').addEventListener('click', babyStartListening);
-  }
+  // onclick="babyStartListening()" on the button handles clicks — no extra listener needed
   babyNewRound();
 }
 
