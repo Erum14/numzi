@@ -1884,15 +1884,22 @@ function babyStartListening() {
     bRecognition = new SR();
     bRecognition.lang='en-US';
     bRecognition.continuous=false;
-    bRecognition.interimResults=false;
+    bRecognition.interimResults=true;
     bRecognition.maxAlternatives=5;
 
     bRecognition.onresult=(e)=>{
-      clearTimeout(bTimeout);
-      const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
-      bListening=false; bUpdateMicUI();
-      bSetMicStatus('I heard: "' + transcripts[0] + '"');
-      babyCheckAnswer(transcripts);
+      let interim='', final='';
+      for(let i=e.resultIndex; i<e.results.length; i++){
+        if(e.results[i].isFinal) final += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      if(interim) bSetMicStatus('Hearing: "' + interim + '"…');
+      if(final){
+        clearTimeout(bTimeout);
+        bListening=false; bUpdateMicUI();
+        bSetMicStatus('I heard: "' + final + '"');
+        babyCheckAnswer([final.toLowerCase().trim()]);
+      }
     };
     bRecognition.onerror=(e)=>{
       clearTimeout(bTimeout);
