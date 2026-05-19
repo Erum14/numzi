@@ -717,13 +717,15 @@ function getBestVoice() {
 window.speechSynthesis.onvoiceschanged = () => { _cachedVoice = null; getBestVoice(); };
 
 /* ── Emotional profiles ── */
+// Keep pitch close to 1.0 — high pitch values cause robotic/squeaky distortion.
+// Use rate and expressive word choice to convey energy instead.
 const MOODS = {
-  excited:     { rate: 1.05, pitch: 1.55 },  // "You got it!"
-  celebrate:   { rate: 1.08, pitch: 1.6  },  // confetti moment
-  gentle:      { rate: 0.80, pitch: 1.15 },  // "Try again…"
-  question:    { rate: 0.82, pitch: 1.35 },  // prompts / questions
-  counting:    { rate: 0.82, pitch: 1.3  },  // 1… 2… 3…
-  instruction: { rate: 0.85, pitch: 1.25 },  // neutral info
+  excited:     { rate: 1.05, pitch: 1.08 },  // upbeat but natural
+  celebrate:   { rate: 1.02, pitch: 1.05 },  // warm and happy
+  gentle:      { rate: 0.82, pitch: 0.96 },  // soft and encouraging
+  question:    { rate: 0.86, pitch: 1.02 },  // clear question tone
+  counting:    { rate: 0.80, pitch: 1.0  },  // slow and clear
+  instruction: { rate: 0.90, pitch: 1.0  },  // natural speaking pace
 };
 
 function speak(text, moodOrRate='instruction', pitch) {
