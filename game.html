@@ -733,8 +733,8 @@ function speak(text, moodOrRate='instruction', pitch) {
   window.speechSynthesis.cancel();
   const profile = (typeof moodOrRate === 'string' && MOODS[moodOrRate])
     ? MOODS[moodOrRate]
-    : { rate: typeof moodOrRate === 'number' ? moodOrRate : 0.88,
-        pitch: pitch || 1.25 };
+    : { rate: typeof moodOrRate === 'number' ? moodOrRate : 0.90,
+        pitch: pitch || 1.0 };
   const u = new SpeechSynthesisUtterance(text);
   u.voice  = getBestVoice();
   u.rate   = profile.rate;
