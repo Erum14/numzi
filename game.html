@@ -690,12 +690,56 @@ function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 const CONFETTI_COLORS = ['#E8844A','#F5C842','#7BBF8E','#7BBFDB','#B59FD6','#E87B7B','#7BBF5E'];
 
-function speak(text, rate=0.88, pitch=1.25) {
-  if (!window.speechSynthesis) return;
+/* ── Voice selection: pick the most natural available voice ── */
+let _cachedVoice = null;
+function getBestVoice() {
+  if (_cachedVoice) return _cachedVoice;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return null;
+  // Priority: Google neural > Apple named > any en-US
+  const priority = [
+    'Google US English', 'Google UK English Female',
+    'Samantha', 'Karen', 'Moira', 'Tessa', 'Fiona',
+    'Microsoft Aria Online (Natural)', 'Microsoft Jenny Online (Natural)',
+    'Microsoft Zira Desktop',
+  ];
+  for (const name of priority) {
+    const v = voices.find(v => v.name === name);
+    if (v) { _cachedVoice = v; return v; }
+  }
+  // Fallback: first en-US
+  _cachedVoice = voices.find(v => v.lang.startsWith('en-US'))
+              || voices.find(v => v.lang.startsWith('en'))
+              || voices[0];
+  return _cachedVoice;
+}
+// Re-cache when voices load async (Chrome)
+window.speechSynthesis.onvoiceschanged = () => { _cachedVoice = null; getBestVoice(); };
+
+/* ── Emotional profiles ── */
+const MOODS = {
+  excited:     { rate: 1.05, pitch: 1.55 },  // "You got it!"
+  celebrate:   { rate: 1.08, pitch: 1.6  },  // confetti moment
+  gentle:      { rate: 0.80, pitch: 1.15 },  // "Try again…"
+  question:    { rate: 0.82, pitch: 1.35 },  // prompts / questions
+  counting:    { rate: 0.82, pitch: 1.3  },  // 1… 2… 3…
+  instruction: { rate: 0.85, pitch: 1.25 },  // neutral info
+};
+
+function speak(text, moodOrRate='instruction', pitch) {
+  if (!window.speechSynthesis) return null;
   window.speechSynthesis.cancel();
+  const profile = (typeof moodOrRate === 'string' && MOODS[moodOrRate])
+    ? MOODS[moodOrRate]
+    : { rate: typeof moodOrRate === 'number' ? moodOrRate : 0.88,
+        pitch: pitch || 1.25 };
   const u = new SpeechSynthesisUtterance(text);
-  u.rate=rate; u.pitch=pitch; u.volume=1;
+  u.voice  = getBestVoice();
+  u.rate   = profile.rate;
+  u.pitch  = profile.pitch;
+  u.volume = 1;
   window.speechSynthesis.speak(u);
+  return u; // callers can attach .onend if needed
 }
 
 function launchConfetti() {
@@ -784,14 +828,14 @@ function handleAnswer(val,btn) {
     document.getElementById('feedback').textContent='🌟 Good Job!';
     document.getElementById('feedback').className='feedback correct';
     document.getElementById('stars').textContent='⭐'.repeat(Math.min(score,5));
-    speak('Good job! You counted '+correctAnswer+'!');
+    speak('Woohoo! Amazing! You counted '+correctAnswer+'! Great job!', 'celebrate');
     launchConfetti();
   } else {
     btn.classList.add('wrong-ans');
     document.querySelectorAll('.choice-btn').forEach(b=>{ if(parseInt(b.dataset.val)===correctAnswer) b.classList.add('correct-ans'); });
     document.getElementById('feedback').textContent='💛 Try Again!';
     document.getElementById('feedback').className='feedback wrong';
-    speak('Try again! The answer was '+correctAnswer+'.');
+    speak('Ohh, not quite… but you can do it! The answer was '+correctAnswer+'. Try again!', 'gentle');
   }
   document.getElementById('nextBtn').textContent='Next ➜';
   round++; document.getElementById('roundVal').textContent=round;
@@ -869,12 +913,9 @@ function clayAdd() {
   if (addBtn) { addBtn.disabled = true; addBtn.style.opacity = '0.45'; }
 
   if (!window.speechSynthesis) { unlock(); return; }
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(String(clayBalls.length));
-  u.rate = 0.85; u.pitch = 1.4; u.volume = 1;
-  u.onend = unlock;
-  u.onerror = unlock;
-  window.speechSynthesis.speak(u);
+  const u = speak(String(clayBalls.length), 'counting');
+  if (u) { u.onend = unlock; u.onerror = unlock; }
+  else unlock();
 
   // Fallback: if onend never fires (some browsers), unlock after 2.5 s max
   setTimeout(unlock, 2500);
@@ -909,7 +950,7 @@ function claySquish(ball) {
     ball.classList.add('squish');
     setTimeout(() => ball.remove(), 300);
     clayUpdateDisplay();
-    speak('Pop!', 1.2, 1.4);
+    speak('Pop!', 'excited');
   }
 }
 
@@ -934,7 +975,7 @@ function clayCount() {
     if (i >= balls.length) {
       // Final announcement
       setTimeout(() => {
-        speak('There are ' + balls.length + '! ' + (NUM_WORDS[balls.length] || balls.length) + '!', 0.82, 1.25);
+        speak('Yay! There are… ' + (NUM_WORDS[balls.length] || balls.length) + '! ' + balls.length + '! Great counting!', 'celebrate');
         launchConfetti();
         isCounting = false;
       }, 300);
@@ -944,7 +985,7 @@ function clayCount() {
     ball.classList.remove('wiggle');
     void ball.offsetWidth;
     ball.classList.add('wiggle');
-    speak(String(i + 1), 0.9, 1.3);
+    speak(String(i + 1), 'counting');
     i++;
     setTimeout(next, 700);
   }
@@ -1059,9 +1100,10 @@ function buildSoundRound() {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const q = new SpeechSynthesisUtterance('Listen… what animal makes this sound?');
-    q.rate = 0.85; q.pitch = 1.25; q.volume = 1;
-    q.onend = () => setTimeout(() => speak(correct.sound, 0.85, 1.2), 350);
-    q.onerror = () => setTimeout(() => speak(correct.sound, 0.85, 1.2), 350);
+    const qMood = MOODS.question;
+    q.voice = getBestVoice(); q.rate = qMood.rate; q.pitch = qMood.pitch; q.volume = 1;
+    q.onend = () => setTimeout(() => speak(correct.sound, 'excited'), 350);
+    q.onerror = () => setTimeout(() => speak(correct.sound, 'excited'), 350);
     window.speechSynthesis.speak(q);
   }, 300);
 
@@ -1091,7 +1133,7 @@ function handleSoundAnswer(picked, btn, correct) {
     aScore++; document.getElementById('aScoreVal').textContent=aScore;
     document.getElementById('animalFeedback').textContent='🌟 Yes! It\'s a '+correct.name+'!';
     document.getElementById('animalFeedback').className='animal-feedback correct';
-    speak('Yes! It\'s a '+correct.name+'! Great detective work!', 0.85, 1.25);
+    speak('Yes!! It\'s a '+correct.name+'! Wow, great detective work!', 'celebrate');
     launchConfetti();
     // Show "now be the animal" prompt
     setTimeout(()=>{
@@ -1113,7 +1155,7 @@ function handleSoundAnswer(picked, btn, correct) {
     document.querySelectorAll('.animal-choice-btn').forEach(b=>{ if(b.querySelector('.a-name')?.textContent===correct.name) b.classList.add('a-correct'); });
     document.getElementById('animalFeedback').textContent='💛 Try again! It was the '+correct.name+'!';
     document.getElementById('animalFeedback').className='animal-feedback wrong';
-    speak('Oops! That was the '+correct.name+'! '+correct.sound, 0.85, 1.2);
+    speak('Ohhh, not this time! That was the '+correct.name+'! It goes… '+correct.sound, 'gentle');
   }
   aRound++; document.getElementById('aRoundVal').textContent=aRound;
   document.getElementById('animalNextBtn').textContent='Next ➜';
@@ -1138,7 +1180,7 @@ function buildCategoryRound() {
 
   const correct=pick(matching);
   document.getElementById('animalQuestion').textContent=cat.q;
-  speak(cat.q.replace(/[🦘🤫💧🕊️🐘🌿🦁🌻🐒🌲]/g,''), 0.85, 1.2);
+  speak(cat.q.replace(/[🦘🤫💧🕊️🐘🌿🦁🌻🐒🌲]/g,''), 'question');
 
   const choices=shuffle([correct, ...pickWrongAnimals(correct,2)]);
   const choicesEl=document.getElementById('animalChoices');
@@ -1153,14 +1195,14 @@ function buildCategoryRound() {
         aScore++; document.getElementById('aScoreVal').textContent=aScore;
         document.getElementById('animalFeedback').textContent='🌟 That\'s right! The '+correct.name+' '+cat.key+'s!';
         document.getElementById('animalFeedback').className='animal-feedback correct';
-        speak('Yes! The '+correct.name+'! Great thinking!', 0.85, 1.25);
+        speak('Yes!! The '+correct.name+'! Wow, you are so smart!', 'celebrate');
         launchConfetti();
       } else {
         btn.classList.add('a-wrong');
         document.querySelectorAll('.animal-choice-btn').forEach(b=>{ if(b.querySelector('.a-name')?.textContent===correct.name) b.classList.add('a-correct'); });
         document.getElementById('animalFeedback').textContent='💛 Not quite! The '+correct.name+' was the answer!';
         document.getElementById('animalFeedback').className='animal-feedback wrong';
-        speak('The '+correct.name+' was the answer!', 0.85, 1.2);
+        speak('Ohh, close! The '+correct.name+' was the answer. You\'ll get it next time!', 'gentle');
       }
       aRound++; document.getElementById('aRoundVal').textContent=aRound;
       document.getElementById('animalNextBtn').textContent='Next ➜';
@@ -1193,7 +1235,7 @@ function buildBeAnimalRound() {
   rev.style.display='flex'; rev.style.flexDirection='column'; rev.style.alignItems='center'; rev.style.gap='.5rem';
   document.getElementById('didItWrap').style.display='block';
 
-  speak('You are the '+a.name+'! '+action, 0.82, 1.2);
+  speak('Now YOU are the '+a.name+'! Can you… '+action+'? Go for it!', 'excited');
 }
 
 function animalDidIt(){
@@ -1203,7 +1245,7 @@ function animalDidIt(){
   document.getElementById('animalFeedback').className='animal-feedback correct';
   document.getElementById('didItWrap').style.display='none';
   document.getElementById('animalNextBtn').textContent='Next ➜';
-  speak('Amazing job! You\'re a star!', 0.85, 1.3);
+  speak('Amazing!! You did it! You are a superstar!', 'celebrate');
   launchConfetti();
   aRound++; document.getElementById('aRoundVal').textContent=aRound;
 }
@@ -1457,7 +1499,7 @@ function wgPickWeather(w) {
   const data = WG_DATA[w];
 
   // Speak
-  speak(`Let's get Tigey ready for a ${data.label} day!`, 0.85, 1.2);
+  speak(`Ooh, it's a ${data.label} day! Let's get Tigey all dressed up and ready to go!`, 'excited');
 
   // Banner
   const banner = document.getElementById('wgBanner');
@@ -1483,7 +1525,7 @@ function wgPickWeather(w) {
 function wgPickOutfit(outfit) {
   const data = WG_DATA[wgWeather];
   // Speak
-  speak(`Yay! Tigey loves it! All set for the ${data.label} day!`, 0.85, 1.25);
+  speak(`Yaaaay! Tigey absolutely loves it! What a great choice! All set for the ${data.label} day!`, 'celebrate');
   // Show big Tigey dressed
   document.getElementById('wgBigTigey').innerHTML = tigey(outfit);
   document.getElementById('wgCelebTitle').textContent = `🎉 Tigey is ready for the ${data.label} day!`;
