@@ -589,21 +589,30 @@
       50%      { box-shadow:0 5px 0 #7f0000, 0 0 0 14px rgba(211,47,47,0); }
     }
 
-    /* Text fallback input */
-    .baby-text-fallback {
-      display:none; gap:.6rem; align-items:center; flex-wrap:wrap; justify-content:center;
+    /* Mic status line */
+    .baby-mic-status {
+      font-family:'Fredoka One',cursive; font-size:1rem;
+      color:#d32f2f; min-height:1.3rem; text-align:center;
+    }
+
+    /* Always-visible text input row */
+    .baby-text-always {
+      display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; justify-content:center;
+    }
+    .baby-or {
+      font-family:'Fredoka One',cursive; font-size:.95rem; color:var(--brown);
     }
     .baby-text-input {
       font-family:'Nunito',sans-serif; font-size:1.1rem;
       border:2.5px solid var(--warm); border-radius:12px;
-      padding:.6rem 1rem; background:#FEFAF4; color:var(--ink);
-      outline:none; width:200px;
+      padding:.55rem .9rem; background:#FEFAF4; color:var(--ink);
+      outline:none; width:170px;
     }
     .baby-text-input:focus { border-color:#F06292; }
     .baby-text-submit {
-      font-family:'Fredoka One',cursive; font-size:1.1rem;
+      font-family:'Fredoka One',cursive; font-size:1.2rem;
       background:#F06292; color:#fff; border:none;
-      border-radius:12px; padding:.6rem 1.4rem; cursor:pointer;
+      border-radius:12px; padding:.55rem 1.1rem; cursor:pointer;
       box-shadow:0 3px 0 #ad3368;
     }
 
@@ -859,11 +868,15 @@
         🎤 Tap &amp; Say the Answer!
       </button>
 
-      <!-- Text fallback (shown when no mic support) -->
-      <div class="baby-text-fallback" id="babyTextFallback">
-        <input class="baby-text-input" id="babyTextInput" placeholder="Type the baby name…"
-               onkeydown="if(event.key==='Enter') babyCheckTextAnswer()" />
-        <button class="baby-text-submit" onclick="babyCheckTextAnswer()">Check!</button>
+      <!-- Status line shown while mic is active -->
+      <div class="baby-mic-status" id="babyMicStatus"></div>
+
+      <!-- Text input — always visible -->
+      <div class="baby-text-always">
+        <span class="baby-or">or type it:</span>
+        <input class="baby-text-input" id="babyTextInput" placeholder="baby name…"
+               onkeydown="if(event.key==='Enter') babyCheckTextAnswer()" autocomplete="off" />
+        <button class="baby-text-submit" onclick="babyCheckTextAnswer()">✓</button>
       </div>
 
       <!-- Feedback + hint -->
@@ -1809,13 +1822,11 @@ function babyNewRound() {
   document.getElementById('babyNextWrap').style.display = 'none';
   document.getElementById('babyBabyCol').style.display = 'none';
 
-  // Reset mic button visibility and state
+  // Reset mic button and status
   const _mb = document.getElementById('babyMicBtn');
   if(_mb) { _mb.style.display=''; _mb.disabled=false; }
+  bSetMicStatus('');
   bUpdateMicUI();
-
-  // Always hide text fallback until mic fails
-  document.getElementById('babyTextFallback').style.display='none';
   document.getElementById('babyTextInput').value='';
 
   // Animate parent in
@@ -1829,24 +1840,36 @@ function babyNewRound() {
   }, 300);
 }
 
-function babyShowTextFallback() {
-  document.getElementById('babyTextFallback').style.display='flex';
-  setTimeout(()=>{ try{ document.getElementById('babyTextInput').focus(); }catch(e){} }, 50);
-  const btn=document.getElementById('babyMicBtn');
-  if(btn) btn.style.display='none';
+function bSetMicStatus(msg) {
+  const el=document.getElementById('babyMicStatus');
+  if(el) el.textContent=msg;
 }
 
-function babyStartListening() {
+async function babyStartListening() {
   if(bAnswered || bListening) return;
 
   const SR = getBSR();
-  if(!SR){ babyShowTextFallback(); return; }
+  if(!SR){
+    bSetMicStatus('🎹 No mic on this browser — use the text box below!');
+    return;
+  }
 
-  // ── Update UI immediately (before any async mic ops) ──
+  // Step 1: explicitly request mic permission so Chrome shows its dialog
+  bSetMicStatus('🎙️ Asking for mic permission…');
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({audio:true});
+  } catch(permErr) {
+    bSetMicStatus('🚫 Mic blocked — please type the answer below.');
+    return;
+  }
+  // Stop the stream immediately — SR will open its own
+  stream.getTracks().forEach(t=>t.stop());
+
+  // Step 2: now start recognition (permission is guaranteed granted)
   bListening=true;
   bUpdateMicUI();
-  document.getElementById('babyFeedback').textContent='🎤 Say the baby name!';
-  document.getElementById('babyFeedback').className='baby-feedback';
+  bSetMicStatus('🔴 Listening… say the baby name!');
 
   try {
     bRecognition = new SR();
@@ -1855,37 +1878,27 @@ function babyStartListening() {
     bRecognition.interimResults=false;
     bRecognition.maxAlternatives=5;
 
-    bRecognition.onstart=()=>{
-      document.getElementById('babyFeedback').textContent='🔴 Listening… say the baby name!';
-    };
-
     bRecognition.onresult=(e)=>{
       const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
-      bListening=false; bUpdateMicUI();
-      document.getElementById('babyFeedback').textContent='';
+      bListening=false; bUpdateMicUI(); bSetMicStatus('');
       babyCheckAnswer(transcripts);
     };
 
     bRecognition.onerror=(e)=>{
       bListening=false; bUpdateMicUI();
-      if(e.error==='no-speech'){
-        // Just reset — let them tap again
-        document.getElementById('babyFeedback').textContent='';
-        return;
-      }
-      if(e.error==='aborted') return; // we stopped it ourselves
-      document.getElementById('babyFeedback').textContent='';
-      babyShowTextFallback();
+      if(e.error==='no-speech'){ bSetMicStatus('🤔 Nothing heard — tap again!'); return; }
+      if(e.error==='aborted'){ bSetMicStatus(''); return; }
+      bSetMicStatus('⚠️ Mic error ('+e.error+') — try typing below.');
     };
 
     bRecognition.onend=()=>{
-      if(bListening){ bListening=false; bUpdateMicUI(); }
+      if(bListening){ bListening=false; bUpdateMicUI(); bSetMicStatus(''); }
     };
 
     bRecognition.start();
   } catch(err) {
     bListening=false; bUpdateMicUI();
-    babyShowTextFallback();
+    bSetMicStatus('⚠️ Could not start mic — try typing below.');
   }
 }
 
