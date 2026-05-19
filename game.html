@@ -379,6 +379,119 @@
       .charm-item { width: 78px; height: 78px; }
       .clay-ball { width: 52px; height: 52px; }
     }
+
+    /* ══════════════════════════════════════
+       WEATHER DRESS-UP GAME
+    ══════════════════════════════════════ */
+    .game-tab[data-game="weather"].active { background:#7BBFDB; border-color:#7BBFDB; box-shadow:0 4px 0 #4fa3c7; }
+    .game-tab[data-game="weather"]:hover  { border-color:#7BBFDB; color:#4fa3c7; }
+
+    .weather-wrap { display:flex; flex-direction:column; align-items:center; gap:1.4rem; width:100%; max-width:700px; }
+    .weather-title { font-family:'Fredoka One',cursive; font-size:clamp(1.4rem,4vw,2rem); color:var(--ink); text-align:center; }
+    .weather-title em { font-style:italic; color:var(--sky); }
+
+    /* ─── Phase wrapper ─── */
+    .wg-phase { display:none; width:100%; flex-direction:column; align-items:center; gap:1.2rem; }
+    .wg-phase.show { display:flex; }
+
+    /* ─── Weather cards grid ─── */
+    .weather-grid { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; }
+    .wcard {
+      width:120px; border-radius:18px; overflow:hidden;
+      border:3px solid var(--warm); cursor:pointer;
+      box-shadow:0 4px 0 var(--warm);
+      transition:transform .2s, box-shadow .2s, border-color .2s;
+      background:var(--cream);
+    }
+    .wcard:hover { transform:translateY(-6px); box-shadow:0 10px 0 var(--warm); border-color:var(--sky); }
+    .wcard-scene { width:120px; height:90px; position:relative; overflow:hidden; }
+    .wcard-label { font-family:'Fredoka One',cursive; font-size:1rem; text-align:center; padding:.45rem 0 .5rem; color:var(--ink); }
+
+    /* ── Sunny scene ── */
+    .wcs-sunny { background:linear-gradient(180deg,#64B5F6 0%,#FFF9C4 100%); }
+    .wcs-sunny .ws-sun { position:absolute; width:48px; height:48px; background:#FFD600; border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 8px rgba(255,214,0,.2),0 0 0 18px rgba(255,214,0,.1); animation:wSunPulse 2s ease-in-out infinite; }
+    @keyframes wSunPulse { 0%,100%{box-shadow:0 0 0 8px rgba(255,214,0,.2),0 0 0 18px rgba(255,214,0,.1)} 50%{box-shadow:0 0 0 14px rgba(255,214,0,.25),0 0 0 26px rgba(255,214,0,.08)} }
+    .wcs-sunny .ws-cloud { position:absolute; bottom:8px; right:6px; width:48px; height:22px; background:rgba(255,255,255,.8); border-radius:99px; }
+    .wcs-sunny .ws-cloud::before { content:''; position:absolute; width:26px; height:26px; background:rgba(255,255,255,.8); border-radius:50%; top:-12px; left:6px; }
+
+    /* ── Rainy scene ── */
+    .wcs-rainy { background:linear-gradient(180deg,#455A64 0%,#78909C 100%); }
+    .wcs-rainy .ws-raincloud { position:absolute; width:70px; height:30px; background:#90A4AE; border-radius:99px; top:12px; left:50%; transform:translateX(-50%); }
+    .wcs-rainy .ws-raincloud::before { content:''; position:absolute; width:36px; height:36px; background:#90A4AE; border-radius:50%; top:-18px; left:8px; }
+    .wcs-rainy .ws-raincloud::after  { content:''; position:absolute; width:28px; height:28px; background:#90A4AE; border-radius:50%; top:-14px; left:28px; }
+    .wcs-rainy .ws-drop { position:absolute; width:4px; background:#90CAF9; border-radius:0 0 4px 4px; animation:wRain .7s linear infinite; }
+    @keyframes wRain { from{transform:translateY(-10px);opacity:0} 20%{opacity:1} to{transform:translateY(70px);opacity:0} }
+    .wcs-rainy .d1{left:28%;top:44px;height:12px;animation-delay:0s}
+    .wcs-rainy .d2{left:42%;top:44px;height:10px;animation-delay:.18s}
+    .wcs-rainy .d3{left:56%;top:44px;height:14px;animation-delay:.35s}
+    .wcs-rainy .d4{left:70%;top:44px;height:11px;animation-delay:.55s}
+    .wcs-rainy .d5{left:20%;top:44px;height:10px;animation-delay:.72s}
+
+    /* ── Snowy scene ── */
+    .wcs-snowy { background:linear-gradient(180deg,#B3E5FC 0%,#EDE7F6 100%); }
+    .wcs-snowy .ws-snowflake { position:absolute; font-size:16px; animation:wSnow linear infinite; color:rgba(255,255,255,.9); text-shadow:0 0 4px rgba(100,150,255,.4); }
+    @keyframes wSnow { from{transform:translateY(-16px) rotate(0deg);opacity:0} 10%{opacity:1} to{transform:translateY(96px) rotate(360deg);opacity:0} }
+    .wcs-snowy .sf1{left:15%;animation-duration:2.2s;animation-delay:0s;font-size:14px}
+    .wcs-snowy .sf2{left:35%;animation-duration:2.8s;animation-delay:.4s}
+    .wcs-snowy .sf3{left:55%;animation-duration:2.4s;animation-delay:.8s;font-size:12px}
+    .wcs-snowy .sf4{left:75%;animation-duration:3s;animation-delay:.2s}
+    .wcs-snowy .sf5{left:50%;animation-duration:2s;animation-delay:1.2s;font-size:18px}
+
+    /* ── Windy scene ── */
+    .wcs-windy { background:linear-gradient(180deg,#B0BEC5 0%,#ECEFF1 100%); }
+    .wcs-windy .ws-windline { position:absolute; height:3px; background:rgba(255,255,255,.6); border-radius:99px; animation:wWind 1.2s ease-in-out infinite; }
+    @keyframes wWind { from{transform:translateX(-30px);opacity:0} 30%{opacity:1} to{transform:translateX(140px);opacity:0} }
+    .wcs-windy .wl1{top:25px;width:55px;left:0;animation-delay:0s}
+    .wcs-windy .wl2{top:42px;width:40px;left:10px;animation-delay:.3s}
+    .wcs-windy .wl3{top:58px;width:65px;left:5px;animation-delay:.6s}
+    .wcs-windy .wl4{top:72px;width:35px;left:0;animation-delay:.9s}
+    .wcs-windy .ws-wcloud { position:absolute; width:55px; height:22px; background:rgba(255,255,255,.7); border-radius:99px; top:18px; right:4px; animation:wCloudDrift 3s ease-in-out infinite; }
+    @keyframes wCloudDrift { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-8px)} }
+
+    /* ── Cloudy scene ── */
+    .wcs-cloudy { background:linear-gradient(180deg,#78909C 0%,#B0BEC5 100%); }
+    .wcs-cloudy .ws-bigcloud { position:absolute; width:74px; height:32px; background:rgba(255,255,255,.75); border-radius:99px; top:18px; left:50%; transform:translateX(-50%); animation:wCloudDrift 4s ease-in-out infinite; }
+    .wcs-cloudy .ws-bigcloud::before { content:''; position:absolute; width:40px; height:40px; background:rgba(255,255,255,.75); border-radius:50%; top:-20px; left:8px; }
+    .wcs-cloudy .ws-bigcloud::after  { content:''; position:absolute; width:30px; height:30px; background:rgba(255,255,255,.75); border-radius:50%; top:-16px; left:32px; }
+    .wcs-cloudy .ws-smlcloud { position:absolute; width:44px; height:20px; background:rgba(255,255,255,.5); border-radius:99px; bottom:14px; right:8px; animation:wCloudDrift 5s ease-in-out infinite reverse; }
+
+    /* ─── Outfit selection phase ─── */
+    .wg-banner {
+      width:100%; border-radius:16px; padding:1rem 1.2rem;
+      font-family:'Fredoka One',cursive; font-size:1.15rem;
+      text-align:center; color:#fff;
+      text-shadow:0 1px 4px rgba(0,0,0,.3);
+    }
+    .outfit-grid { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .outfit-card {
+      width:170px; border-radius:18px; overflow:hidden;
+      border:3px solid var(--warm); cursor:pointer;
+      box-shadow:0 4px 0 var(--warm); background:var(--cream);
+      transition:transform .2s, box-shadow .2s, border-color .2s;
+      display:flex; flex-direction:column; align-items:center;
+    }
+    .outfit-card:hover { transform:translateY(-6px); box-shadow:0 10px 0 var(--warm); border-color:var(--orange); }
+    .outfit-card svg { width:140px; height:200px; }
+    .outfit-card-label { font-family:'Fredoka One',cursive; font-size:.95rem; text-align:center; padding:.5rem .6rem .7rem; color:var(--ink); line-height:1.2; }
+
+    /* ─── Celebration phase ─── */
+    .wg-celebrate { display:flex; flex-direction:column; align-items:center; gap:1rem; }
+    .wg-celebrate-title { font-family:'Fredoka One',cursive; font-size:clamp(1.4rem,4vw,2rem); color:var(--sage); text-align:center; }
+    .wg-big-tigey svg { width:200px; height:280px; }
+    .wg-replay-btn {
+      font-family:'Fredoka One',cursive; font-size:1.2rem;
+      background:var(--sky); color:#fff; border:none;
+      border-radius:14px; padding:.75rem 2.2rem; cursor:pointer;
+      box-shadow:0 4px 0 #4fa3c7; transition:transform .15s, box-shadow .15s;
+    }
+    .wg-replay-btn:hover { transform:translateY(-3px); box-shadow:0 7px 0 #4fa3c7; }
+
+    @media (max-width:520px) {
+      .wcard { width:100px; }
+      .wcard-scene { width:100px; height:75px; }
+      .outfit-card { width:140px; }
+      .outfit-card svg { width:115px; height:165px; }
+    }
   </style>
 </head>
 <body>
@@ -402,7 +515,8 @@
 <div class="game-tabs">
   <button class="game-tab active" data-game="quiz"   onclick="switchGame('quiz')">🔢 Charm Counting Quiz</button>
   <button class="game-tab"        data-game="clay"   onclick="switchGame('clay')">🎨 Clay Counting</button>
-  <button class="game-tab"        data-game="animal" onclick="switchGame('animal')">🕵️ Animal Freeze Detective</button>
+  <button class="game-tab"        data-game="animal"   onclick="switchGame('animal')">🕵️ Animal Freeze Detective</button>
+  <button class="game-tab"        data-game="weather" onclick="switchGame('weather')">🌤️ Weather Dress-Up</button>
 </div>
 
 <!-- ════════════════════════════════════════
@@ -497,6 +611,73 @@
     <!-- Next button -->
     <div class="btn-row">
       <button class="new-game-btn" id="animalNextBtn" onclick="animalNext()">Next ➜</button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SECTION 4 — WEATHER DRESS-UP
+════════════════════════════════════════ -->
+<section class="game-section" id="sec-weather">
+  <div class="weather-wrap">
+    <div class="weather-title">🌤️ <em>What's the weather outside?</em></div>
+
+    <!-- PHASE 1: Pick weather -->
+    <div class="wg-phase show" id="wgPhase1">
+      <div class="weather-grid">
+        <div class="wcard" onclick="wgPickWeather('sunny')">
+          <div class="wcard-scene wcs-sunny">
+            <div class="ws-sun"></div><div class="ws-cloud"></div>
+          </div>
+          <div class="wcard-label">☀️ Sunny</div>
+        </div>
+        <div class="wcard" onclick="wgPickWeather('rainy')">
+          <div class="wcard-scene wcs-rainy">
+            <div class="ws-raincloud"></div>
+            <div class="ws-drop d1"></div><div class="ws-drop d2"></div>
+            <div class="ws-drop d3"></div><div class="ws-drop d4"></div><div class="ws-drop d5"></div>
+          </div>
+          <div class="wcard-label">🌧️ Rainy</div>
+        </div>
+        <div class="wcard" onclick="wgPickWeather('snowy')">
+          <div class="wcard-scene wcs-snowy">
+            <div class="ws-snowflake sf1">❄</div><div class="ws-snowflake sf2">❄</div>
+            <div class="ws-snowflake sf3">❄</div><div class="ws-snowflake sf4">❄</div>
+            <div class="ws-snowflake sf5">✦</div>
+          </div>
+          <div class="wcard-label">❄️ Snowy</div>
+        </div>
+        <div class="wcard" onclick="wgPickWeather('windy')">
+          <div class="wcard-scene wcs-windy">
+            <div class="ws-windline wl1"></div><div class="ws-windline wl2"></div>
+            <div class="ws-windline wl3"></div><div class="ws-windline wl4"></div>
+            <div class="ws-wcloud"></div>
+          </div>
+          <div class="wcard-label">💨 Windy</div>
+        </div>
+        <div class="wcard" onclick="wgPickWeather('cloudy')">
+          <div class="wcard-scene wcs-cloudy">
+            <div class="ws-bigcloud"></div><div class="ws-smlcloud"></div>
+          </div>
+          <div class="wcard-label">⛅ Cloudy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2: Pick outfit -->
+    <div class="wg-phase" id="wgPhase2">
+      <div class="wg-banner" id="wgBanner"></div>
+      <div class="weather-title" style="font-size:1.3rem">What should Tigey wear?</div>
+      <div class="outfit-grid" id="wgOutfitGrid"></div>
+    </div>
+
+    <!-- PHASE 3: Celebrate -->
+    <div class="wg-phase" id="wgPhase3">
+      <div class="wg-celebrate">
+        <div class="wg-celebrate-title" id="wgCelebTitle">🎉 Tigey is ready!</div>
+        <div class="wg-big-tigey" id="wgBigTigey"></div>
+        <button class="wg-replay-btn" onclick="wgReset()">Play Again 🔄</button>
+      </div>
     </div>
   </div>
 </section>
@@ -1035,7 +1216,8 @@ buildSoundRound();   // pre-load animal game (hidden)
 (function() {
   const hash = location.hash.replace('#', '');
   if (hash === 'clay')   switchGame('clay');
-  if (hash === 'animal') switchGame('animal');
+  if (hash === 'animal')  switchGame('animal');
+  if (hash === 'weather') switchGame('weather');
 })();
 
 /* ════════════════════════════════════
@@ -1120,6 +1302,197 @@ document.addEventListener('keydown', e => {
   hint.innerHTML = '⌨️ Keys: <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">+</kbd> add &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">-</kbd> remove &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Space</kbd> count &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">Enter</kbd> clear &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">↑↓</kbd> color &nbsp; <kbd style="background:var(--warm);padding:.1rem .4rem;border-radius:5px;font-family:monospace">1–7</kbd> color';
   wrap.appendChild(hint);
 })();
+
+/* ════════════════════════════════════
+   GAME 4 — WEATHER DRESS-UP
+════════════════════════════════════ */
+const WG_DATA = {
+  sunny:  { label:'Sunny',  bg:'linear-gradient(135deg,#42A5F5,#FFF59D)', bannerBg:'#F9A825', emoji:'☀️' },
+  rainy:  { label:'Rainy',  bg:'linear-gradient(135deg,#455A64,#90CAF9)', bannerBg:'#1565C0', emoji:'🌧️' },
+  snowy:  { label:'Snowy',  bg:'linear-gradient(135deg,#B3E5FC,#EDE7F6)', bannerBg:'#5C6BC0', emoji:'❄️' },
+  windy:  { label:'Windy',  bg:'linear-gradient(135deg,#90A4AE,#DCEDC8)', bannerBg:'#558B2F', emoji:'💨' },
+  cloudy: { label:'Cloudy', bg:'linear-gradient(135deg,#78909C,#CFD8DC)', bannerBg:'#546E7A', emoji:'⛅' },
+};
+
+const WG_OUTFITS = {
+  sunny: [
+    { name:'Sun Hat & T-Shirt', hat:'sunhat',    body:'tshirt',    extra:null,         c:'#FFD54F' },
+    { name:'Swimsuit',          hat:null,         body:'swimsuit',  extra:'sunglasses', c:'#FF8A80' },
+    { name:'Cap & Shorts',      hat:'cap',        body:'shorts',    extra:null,         c:'#80DEEA' },
+  ],
+  rainy: [
+    { name:'Yellow Raincoat',   hat:'rainhat',    body:'coat',      extra:'umbrella',   c:'#FFF176' },
+    { name:'Blue Poncho',       hat:'hood',       body:'poncho',    extra:null,         c:'#4FC3F7' },
+    { name:'Red Jacket & Boots',hat:null,         body:'jacket',    extra:'boots',      c:'#EF9A9A' },
+  ],
+  snowy: [
+    { name:'Winter Coat & Scarf', hat:'winterhat', body:'coat',     extra:'scarf',      c:'#EF9A9A' },
+    { name:'Purple Snowsuit',   hat:'hood',       body:'snowsuit',  extra:'mittens',    c:'#CE93D8' },
+    { name:'Cozy Sweater & Beanie', hat:'beanie', body:'sweater',   extra:null,         c:'#FFCC80' },
+  ],
+  windy: [
+    { name:'Green Windbreaker', hat:null,         body:'jacket',    extra:null,         c:'#A5D6A7' },
+    { name:'Pink Hoodie & Scarf',hat:'hood',      body:'sweater',   extra:'scarf',      c:'#F48FB1' },
+    { name:'Blue Jacket & Cap', hat:'cap',        body:'jacket',    extra:null,         c:'#80DEEA' },
+  ],
+  cloudy: [
+    { name:'Yellow Jacket',     hat:null,         body:'jacket',    extra:null,         c:'#FFE082' },
+    { name:'Orange Sweater',    hat:null,         body:'sweater',   extra:null,         c:'#FFAB91' },
+    { name:'Pink Cardigan & Hat',hat:'beanie',    body:'sweater',   extra:null,         c:'#F8BBD0' },
+  ],
+};
+
+let wgWeather = null;
+
+/* ── SVG pieces ── */
+function _hat(type, c) {
+  if (!type) return '';
+  const d = c + ''; const dk = 'rgba(0,0,0,0.18)';
+  switch(type) {
+    case 'sunhat':   return `<ellipse cx="60" cy="44" rx="54" ry="11" fill="${d}"/><ellipse cx="60" cy="33" rx="28" ry="17" fill="${d}"/><rect x="33" y="40" width="54" height="8" rx="4" fill="${dk}"/>`;
+    case 'cap':      return `<path d="M16 56 Q60 6 104 56 Q80 42 60 40 Q40 42 16 56Z" fill="${d}"/><path d="M16 56 L-6 66 Q22 62 46 59 Q30 58 16 56Z" fill="${d}"/>`;
+    case 'winterhat':return `<rect x="28" y="10" width="64" height="52" rx="32" fill="${d}"/><rect x="20" y="50" width="80" height="14" rx="7" fill="rgba(255,255,255,0.35)"/><circle cx="60" cy="8" r="12" fill="white" opacity="0.9"/>`;
+    case 'beanie':   return `<path d="M14 66 Q16 12 60 9 Q104 12 106 66 Q84 52 60 52 Q36 52 14 66Z" fill="${d}"/><rect x="14" y="58" width="92" height="14" rx="7" fill="rgba(255,255,255,0.3)"/>`;
+    case 'rainhat':  return `<ellipse cx="60" cy="46" rx="57" ry="11" fill="${d}"/><path d="M20 46 Q22 8 60 5 Q98 8 100 46Z" fill="${d}"/>`;
+    case 'hood':     return `<path d="M12 84 Q14 16 60 11 Q106 16 108 84 Q88 62 60 60 Q32 62 12 84Z" fill="${d}" opacity="0.88"/>`;
+    default: return '';
+  }
+}
+function _body(type, c) {
+  if (!type) return '';
+  const d = c + ''; const sl = `<ellipse cx="20" cy="163" rx="12" ry="28" fill="${d}" transform="rotate(12 20 163)"/><ellipse cx="100" cy="163" rx="12" ry="28" fill="${d}" transform="rotate(-12 100 163)"/>`;
+  const btns = `<circle cx="60" cy="138" r="3.5" fill="rgba(255,255,255,0.55)"/><circle cx="60" cy="154" r="3.5" fill="rgba(255,255,255,0.55)"/><circle cx="60" cy="170" r="3.5" fill="rgba(255,255,255,0.55)"/>`;
+  switch(type) {
+    case 'tshirt':  return `<ellipse cx="60" cy="153" rx="34" ry="36" fill="${d}"/>`;
+    case 'swimsuit':return `<ellipse cx="60" cy="170" rx="26" ry="46" fill="${d}"/>`;
+    case 'shorts':  return `<ellipse cx="60" cy="148" rx="33" ry="28" fill="${d}"/>${sl}<rect x="31" y="170" width="58" height="34" rx="10" fill="#8B9DC3" opacity="0.85"/>`;
+    case 'coat':
+    case 'jacket':  return `<ellipse cx="60" cy="166" rx="35" ry="48" fill="${d}"/>${sl}<line x1="60" y1="122" x2="60" y2="206" stroke="rgba(0,0,0,0.14)" stroke-width="2.5"/>${btns}`;
+    case 'poncho':
+    case 'snowsuit':return `<ellipse cx="60" cy="169" rx="37" ry="52" fill="${d}"/>${sl}`;
+    case 'sweater': return `<ellipse cx="60" cy="158" rx="34" ry="40" fill="${d}"/>${sl}${[44,52,60,68,76].map(x=>`<line x1="${x}" y1="120" x2="${x}" y2="194" stroke="rgba(0,0,0,0.07)" stroke-width="2"/>`).join('')}`;
+    default: return '';
+  }
+}
+function _extra(type, c) {
+  if (!type) return '';
+  const d = c + '';
+  switch(type) {
+    case 'sunglasses': return `<ellipse cx="44" cy="80" rx="15" ry="11" fill="${d}" opacity="0.88"/><ellipse cx="76" cy="80" rx="15" ry="11" fill="${d}" opacity="0.88"/><line x1="59" y1="80" x2="61" y2="80" stroke="#444" stroke-width="2.5"/><line x1="29" y1="78" x2="16" y2="75" stroke="#444" stroke-width="2"/><line x1="91" y1="78" x2="104" y2="75" stroke="#444" stroke-width="2"/>`;
+    case 'umbrella':   return `<line x1="105" y1="185" x2="118" y2="136" stroke="#888" stroke-width="2.5" stroke-linecap="round"/><path d="M88 135 Q112 102 136 135 Q124 130 112 132 Q104 130 96 132 Q90 131 88 135Z" fill="${d}" opacity="0.92"/><path d="M88 135 Q112 130 136 135" stroke="rgba(0,0,0,0.18)" stroke-width="1.5" fill="none"/>`;
+    case 'boots':      return `<rect x="27" y="213" width="34" height="24" rx="9" fill="${d}"/><ellipse cx="44" cy="234" rx="18" ry="11" fill="${d}"/><rect x="59" y="213" width="34" height="24" rx="9" fill="${d}"/><ellipse cx="76" cy="234" rx="18" ry="11" fill="${d}"/>`;
+    case 'mittens':    return `<ellipse cx="13" cy="186" r="15" fill="${d}" opacity="0.95"/><ellipse cx="107" cy="186" r="15" fill="${d}" opacity="0.95"/>`;
+    case 'scarf':      return `<ellipse cx="60" cy="128" rx="24" ry="11" fill="${d}" opacity="0.95"/><path d="M50 129 Q58 142 56 154" stroke="${d}" stroke-width="9" stroke-linecap="round" opacity="0.95"/>`;
+    default: return '';
+  }
+}
+
+function tigey(outfit) {
+  const B='#F5A52A', S='#C4621A', T='#FDD8A0';
+  const hasSunglasses = outfit && outfit.extra === 'sunglasses';
+  const eyeLayer = hasSunglasses
+    ? _extra('sunglasses', outfit.c)
+    : `<circle cx="45" cy="81" r="8" fill="#5B3A1A"/><circle cx="77" cy="81" r="8" fill="#5B3A1A"/><circle cx="46" cy="82" r="5" fill="#111"/><circle cx="78" cy="82" r="5" fill="#111"/><circle cx="49" cy="79" r="2.2" fill="white"/><circle cx="81" cy="79" r="2.2" fill="white"/>`;
+  return `<svg viewBox="0 0 120 250" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="244" rx="34" ry="8" fill="rgba(0,0,0,0.10)"/>
+    <ellipse cx="43" cy="231" rx="16" ry="11" fill="${B}"/>
+    <ellipse cx="77" cy="231" rx="16" ry="11" fill="${B}"/>
+    <circle cx="34" cy="227" r="4" fill="${S}" opacity="0.4"/>
+    <circle cx="44" cy="224" r="4" fill="${S}" opacity="0.4"/>
+    <circle cx="54" cy="225" r="4" fill="${S}" opacity="0.4"/>
+    <circle cx="66" cy="225" r="4" fill="${S}" opacity="0.4"/>
+    <circle cx="76" cy="224" r="4" fill="${S}" opacity="0.4"/>
+    <circle cx="86" cy="227" r="4" fill="${S}" opacity="0.4"/>
+    <ellipse cx="60" cy="168" rx="34" ry="52" fill="${B}"/>
+    <ellipse cx="60" cy="176" rx="20" ry="36" fill="${T}"/>
+    <path d="M29 150 Q37 140 42 153" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M91 150 Q83 140 78 153" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M27 168 Q35 158 40 171" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M93 168 Q85 158 80 171" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    ${outfit ? _body(outfit.body, outfit.c) : ''}
+    <ellipse cx="20" cy="163" rx="12" ry="28" fill="${B}" transform="rotate(12 20 163)"/>
+    <ellipse cx="100" cy="163" rx="12" ry="28" fill="${B}" transform="rotate(-12 100 163)"/>
+    <circle cx="13" cy="187" r="12" fill="${B}"/>
+    <circle cx="107" cy="187" r="12" fill="${B}"/>
+    ${outfit && outfit.extra !== 'sunglasses' ? _extra(outfit.extra, outfit.c) : ''}
+    ${outfit && outfit.extra === 'scarf' ? _extra('scarf', outfit.c) : ''}
+    <circle cx="60" cy="82" r="44" fill="${B}"/>
+    <path d="M22 52 L8 18 L46 42Z" fill="${B}"/><path d="M24 50 L14 24 L44 42Z" fill="#E8844A"/>
+    <path d="M98 52 L112 18 L74 42Z" fill="${B}"/><path d="M96 50 L106 24 L76 42Z" fill="#E8844A"/>
+    <path d="M27 68 Q34 56 39 70" stroke="${S}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M93 68 Q86 56 81 70" stroke="${S}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M49 38 Q60 27 71 38" stroke="${S}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="44" cy="80" r="12" fill="white"/><circle cx="76" cy="80" r="12" fill="white"/>
+    ${eyeLayer}
+    <ellipse cx="60" cy="100" rx="18" ry="13" fill="${T}"/>
+    <path d="M55 96 Q60 92 65 96 L63 100 Q60 101 57 100Z" fill="${S}"/>
+    <path d="M60 100 L53 108" stroke="${S}" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M60 100 L67 108" stroke="${S}" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M53 108 Q60 114 67 108" stroke="${S}" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="33" cy="90" r="9" fill="#FFB74D" opacity="0.3"/>
+    <circle cx="87" cy="90" r="9" fill="#FFB74D" opacity="0.3"/>
+    <line x1="12" y1="97" x2="50" y2="99" stroke="${S}" stroke-width="1.5" opacity="0.4"/>
+    <line x1="12" y1="104" x2="50" y2="103" stroke="${S}" stroke-width="1.5" opacity="0.4"/>
+    <line x1="108" y1="97" x2="70" y2="99" stroke="${S}" stroke-width="1.5" opacity="0.4"/>
+    <line x1="108" y1="104" x2="70" y2="103" stroke="${S}" stroke-width="1.5" opacity="0.4"/>
+    ${outfit ? _hat(outfit.hat, outfit.c) : ''}
+    ${hasSunglasses ? _extra('sunglasses', outfit.c) : ''}
+    ${outfit && outfit.extra === 'umbrella' ? _extra('umbrella', outfit.c) : ''}
+    ${outfit && outfit.extra === 'mittens'  ? _extra('mittens',  outfit.c) : ''}
+    ${outfit && outfit.extra === 'boots'    ? _extra('boots',    outfit.c) : ''}
+  </svg>`;
+}
+
+/* ── Game flow ── */
+function wgPickWeather(w) {
+  wgWeather = w;
+  const data = WG_DATA[w];
+
+  // Speak
+  speak(`Let's get Tigey ready for a ${data.label} day!`, 0.85, 1.2);
+
+  // Banner
+  const banner = document.getElementById('wgBanner');
+  banner.textContent = `${data.emoji} Let's get Tigey ready for a ${data.label} day!`;
+  banner.style.background = data.bannerBg;
+
+  // Build outfit cards
+  const grid = document.getElementById('wgOutfitGrid');
+  grid.innerHTML = '';
+  WG_OUTFITS[w].forEach((outfit, i) => {
+    const card = document.createElement('div');
+    card.className = 'outfit-card';
+    card.innerHTML = tigey(outfit) + `<div class="outfit-card-label">${outfit.name}</div>`;
+    card.onclick = () => wgPickOutfit(outfit);
+    grid.appendChild(card);
+  });
+
+  // Transition
+  document.getElementById('wgPhase1').classList.remove('show');
+  setTimeout(() => document.getElementById('wgPhase2').classList.add('show'), 100);
+}
+
+function wgPickOutfit(outfit) {
+  const data = WG_DATA[wgWeather];
+  // Speak
+  speak(`Yay! Tigey loves it! All set for the ${data.label} day!`, 0.85, 1.25);
+  // Show big Tigey dressed
+  document.getElementById('wgBigTigey').innerHTML = tigey(outfit);
+  document.getElementById('wgCelebTitle').textContent = `🎉 Tigey is ready for the ${data.label} day!`;
+  // Transition
+  document.getElementById('wgPhase2').classList.remove('show');
+  setTimeout(() => {
+    document.getElementById('wgPhase3').classList.add('show');
+    launchConfetti();
+  }, 100);
+}
+
+function wgReset() {
+  document.getElementById('wgPhase3').classList.remove('show');
+  document.getElementById('wgPhase2').classList.remove('show');
+  setTimeout(() => document.getElementById('wgPhase1').classList.add('show'), 100);
+  wgWeather = null;
+}
 </script>
 </body>
 </html>
