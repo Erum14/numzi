@@ -385,6 +385,8 @@
     ══════════════════════════════════════ */
     .game-tab[data-game="weather"].active { background:#7BBFDB; border-color:#7BBFDB; box-shadow:0 4px 0 #4fa3c7; }
     .game-tab[data-game="weather"]:hover  { border-color:#7BBFDB; color:#4fa3c7; }
+    .game-tab[data-game="baby"].active { background:#F06292; border-color:#F06292; box-shadow:0 4px 0 #ad3368; }
+    .game-tab[data-game="baby"]:hover  { border-color:#F06292; color:#ad3368; }
 
     .weather-wrap { display:flex; flex-direction:column; align-items:center; gap:1.4rem; width:100%; max-width:700px; }
     .weather-title { font-family:'Fredoka One',cursive; font-size:clamp(1.4rem,4vw,2rem); color:var(--ink); text-align:center; }
@@ -492,6 +494,144 @@
       .outfit-card { width:140px; }
       .outfit-card svg { width:115px; height:165px; }
     }
+
+    /* ══════════════════════════════════════
+       GAME 5 — WHO IS MY BABY?
+    ══════════════════════════════════════ */
+    .baby-wrap {
+      display:flex; flex-direction:column; align-items:center;
+      gap:1.4rem; width:100%; max-width:640px;
+    }
+    .baby-title {
+      font-family:'Fredoka One',cursive;
+      font-size:clamp(1.5rem,4vw,2.2rem);
+      color:var(--ink); text-align:center;
+    }
+    .baby-title span { color:#F06292; }
+
+    /* Stage: parent + baby side by side */
+    .baby-stage {
+      display:flex; flex-direction:column; align-items:center; gap:1.2rem;
+      width:100%;
+    }
+    .baby-animals-row {
+      display:flex; align-items:flex-end; justify-content:center;
+      gap:2.5rem; min-height:160px;
+    }
+    .baby-animal-col {
+      display:flex; flex-direction:column; align-items:center; gap:.4rem;
+    }
+    .baby-parent-emoji {
+      font-size:7rem; line-height:1;
+      display:inline-block;
+      animation: babyBounce 1.2s ease-in-out infinite;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.13));
+    }
+    .baby-child-emoji {
+      font-size:4.2rem; line-height:1;
+      display:inline-block;
+      animation: babySlideIn .55s cubic-bezier(.34,1.56,.64,1) both;
+      filter: drop-shadow(0 4px 7px rgba(0,0,0,.12));
+    }
+    .baby-animal-label {
+      font-family:'Fredoka One',cursive; font-size:1rem;
+      color:var(--brown); text-align:center;
+    }
+    @keyframes babyBounce {
+      0%,100% { transform:translateY(0) rotate(-3deg); }
+      50%      { transform:translateY(-14px) rotate(3deg); }
+    }
+    @keyframes babySlideIn {
+      from { transform:translateX(60px) scale(.3); opacity:0; }
+      to   { transform:translateX(0) scale(1); opacity:1; }
+    }
+
+    /* Speech bubble */
+    .baby-bubble-wrap { position:relative; }
+    .baby-bubble {
+      background:#fff; border:3px solid var(--warm);
+      border-radius:22px; padding:.75rem 1.4rem;
+      font-family:'Fredoka One',cursive; font-size:1.3rem;
+      color:var(--ink); text-align:center;
+      box-shadow:0 4px 14px rgba(61,44,30,.10);
+      position:relative;
+    }
+    .baby-bubble::after {
+      content:''; position:absolute; bottom:-16px; left:50%; transform:translateX(-50%);
+      border:8px solid transparent;
+      border-top-color:var(--warm);
+    }
+    .baby-bubble::before {
+      content:''; position:absolute; bottom:-12px; left:50%; transform:translateX(-50%);
+      border:7px solid transparent;
+      border-top-color:#fff;
+      z-index:1;
+    }
+
+    /* Mic button */
+    .baby-mic-btn {
+      font-family:'Fredoka One',cursive; font-size:1.35rem;
+      background:#F06292; color:#fff; border:none;
+      border-radius:50px; padding:.85rem 2.4rem;
+      cursor:pointer; box-shadow:0 5px 0 #ad3368;
+      transition:transform .15s, box-shadow .15s, background .2s;
+      display:flex; align-items:center; gap:.5rem;
+    }
+    .baby-mic-btn:hover:not(:disabled) { transform:translateY(-3px); box-shadow:0 8px 0 #ad3368; }
+    .baby-mic-btn:active:not(:disabled) { transform:translateY(2px); box-shadow:0 2px 0 #ad3368; }
+    .baby-mic-btn.listening {
+      background:#d32f2f;
+      animation: micGlow 0.9s ease-in-out infinite;
+    }
+    .baby-mic-btn:disabled { opacity:.55; cursor:default; }
+    @keyframes micGlow {
+      0%,100% { box-shadow:0 5px 0 #7f0000, 0 0 0 0 rgba(211,47,47,.5); }
+      50%      { box-shadow:0 5px 0 #7f0000, 0 0 0 14px rgba(211,47,47,0); }
+    }
+
+    /* Text fallback input */
+    .baby-text-fallback {
+      display:none; gap:.6rem; align-items:center; flex-wrap:wrap; justify-content:center;
+    }
+    .baby-text-input {
+      font-family:'Nunito',sans-serif; font-size:1.1rem;
+      border:2.5px solid var(--warm); border-radius:12px;
+      padding:.6rem 1rem; background:#FEFAF4; color:var(--ink);
+      outline:none; width:200px;
+    }
+    .baby-text-input:focus { border-color:#F06292; }
+    .baby-text-submit {
+      font-family:'Fredoka One',cursive; font-size:1.1rem;
+      background:#F06292; color:#fff; border:none;
+      border-radius:12px; padding:.6rem 1.4rem; cursor:pointer;
+      box-shadow:0 3px 0 #ad3368;
+    }
+
+    /* Feedback */
+    .baby-feedback {
+      font-family:'Fredoka One',cursive; font-size:1.6rem;
+      min-height:2rem; text-align:center;
+    }
+    .baby-feedback.correct { color:var(--sage); }
+    .baby-feedback.wrong   { color:var(--coral); }
+    .baby-feedback.hint    { color:var(--brown); font-size:1.1rem; }
+
+    /* Hint text */
+    .baby-hint-text {
+      font-family:'Fredoka One',cursive; font-size:1rem;
+      color:#F06292; min-height:1.4rem; text-align:center;
+    }
+
+    /* Heart / arrow connector between parent and baby */
+    .baby-connector {
+      font-size:2.2rem; line-height:1;
+      animation: heartPop .6s cubic-bezier(.34,1.56,.64,1) both;
+      align-self:center;
+    }
+    @keyframes heartPop {
+      from { transform:scale(0); opacity:0; }
+      to   { transform:scale(1); opacity:1; }
+    }
   </style>
 </head>
 <body>
@@ -517,6 +657,7 @@
   <button class="game-tab"        data-game="clay"   onclick="switchGame('clay')">🎨 Clay Counting</button>
   <button class="game-tab"        data-game="animal"   onclick="switchGame('animal')">🕵️ Animal Freeze Detective</button>
   <button class="game-tab"        data-game="weather" onclick="switchGame('weather')">🌤️ Weather Dress-Up</button>
+  <button class="game-tab"        data-game="baby"    onclick="switchGame('baby')">🍼 Who is my Baby?</button>
 </div>
 
 <!-- ════════════════════════════════════════
@@ -682,6 +823,61 @@
   </div>
 </section>
 
+<!-- ════════════════════════════════════════
+     SECTION 5 — WHO IS MY BABY?
+════════════════════════════════════════ -->
+<section class="game-section" id="sec-baby">
+  <div class="baby-wrap">
+    <div class="baby-title">🍼 Who is my <span>Baby?</span></div>
+    <div class="score-bar">
+      <div>⭐ Score: <span id="babyScore">0</span></div>
+      <div>🎯 Round: <span id="babyRound">1</span></div>
+    </div>
+
+    <div class="baby-stage">
+      <!-- Speech bubble -->
+      <div class="baby-bubble-wrap">
+        <div class="baby-bubble" id="babyBubble">Who is my baby? 🎤</div>
+      </div>
+
+      <!-- Animals row (parent left, baby right after answer) -->
+      <div class="baby-animals-row" id="babyAnimalsRow">
+        <div class="baby-animal-col" id="babyParentCol">
+          <div class="baby-parent-emoji" id="babyParentEmoji">🐄</div>
+          <div class="baby-animal-label" id="babyParentLabel">Cow</div>
+        </div>
+        <!-- connector + baby appear after correct answer -->
+        <div class="baby-animal-col" id="babyBabyCol" style="display:none">
+          <div class="baby-connector">💕</div>
+          <div class="baby-child-emoji" id="babyChildEmoji">🐮</div>
+          <div class="baby-animal-label" id="babyChildLabel">Calf</div>
+        </div>
+      </div>
+
+      <!-- Mic button -->
+      <button class="baby-mic-btn" id="babyMicBtn" onclick="babyStartListening()">
+        🎤 Tap &amp; Say the Answer!
+      </button>
+
+      <!-- Text fallback (shown when no mic support) -->
+      <div class="baby-text-fallback" id="babyTextFallback">
+        <input class="baby-text-input" id="babyTextInput" placeholder="Type the baby name…"
+               onkeydown="if(event.key==='Enter') babyCheckTextAnswer()" />
+        <button class="baby-text-submit" onclick="babyCheckTextAnswer()">Check!</button>
+      </div>
+
+      <!-- Feedback + hint -->
+      <div class="baby-feedback" id="babyFeedback"></div>
+      <div class="baby-hint-text" id="babyHintText"></div>
+
+      <!-- Next button -->
+      <div id="babyNextWrap" style="display:none">
+        <button class="new-game-btn" onclick="babyNewRound()">Next Animal ➜</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <script>
 /* ════════════════════════════════════
    SHARED HELPERS
@@ -767,6 +963,7 @@ function switchGame(name) {
   document.querySelectorAll('.game-tab').forEach(t=>t.classList.toggle('active', t.dataset.game===name));
   document.querySelectorAll('.game-section').forEach(s=>s.classList.toggle('active', s.id==='sec-'+name));
   location.hash = name;
+  if(name==='baby') babyInit();
 }
 
 /* ════════════════════════════════════
@@ -1270,9 +1467,10 @@ buildSoundRound();   // pre-load animal game (hidden)
 // Restore tab from URL hash on load
 (function() {
   const hash = location.hash.replace('#', '');
-  if (hash === 'clay')   switchGame('clay');
+  if (hash === 'clay')    switchGame('clay');
   if (hash === 'animal')  switchGame('animal');
   if (hash === 'weather') switchGame('weather');
+  if (hash === 'baby')    switchGame('baby');
 })();
 
 /* ════════════════════════════════════
@@ -1547,6 +1745,218 @@ function wgReset() {
   document.getElementById('wgPhase2').classList.remove('show');
   setTimeout(() => document.getElementById('wgPhase1').classList.add('show'), 100);
   wgWeather = null;
+}
+
+/* ════════════════════════════════════
+   GAME 5 — WHO IS MY BABY?
+════════════════════════════════════ */
+const BABY_ANIMALS = [
+  { parent:'Cow',       parentEmoji:'🐄', baby:'Calf',        babyEmoji:'🐮', sound:'Moo moo!',       accepts:['calf','calves'] },
+  { parent:'Dog',       parentEmoji:'🐕', baby:'Puppy',       babyEmoji:'🐶', sound:'Woof woof!',      accepts:['puppy','pup','puppies'] },
+  { parent:'Cat',       parentEmoji:'🐈', baby:'Kitten',      babyEmoji:'🐱', sound:'Meow meow!',      accepts:['kitten','kitty','kittens'] },
+  { parent:'Duck',      parentEmoji:'🦆', baby:'Duckling',    babyEmoji:'🐥', sound:'Quack quack!',    accepts:['duckling','ducklings','duck'] },
+  { parent:'Sheep',     parentEmoji:'🐑', baby:'Lamb',        babyEmoji:'🐑', sound:'Baa baa!',        accepts:['lamb','lambs'] },
+  { parent:'Pig',       parentEmoji:'🐖', baby:'Piglet',      babyEmoji:'🐷', sound:'Oink oink!',      accepts:['piglet','piglets','pig'] },
+  { parent:'Hen',       parentEmoji:'🐔', baby:'Chick',       babyEmoji:'🐤', sound:'Cluck cluck!',    accepts:['chick','chicks','chicken'] },
+  { parent:'Horse',     parentEmoji:'🐎', baby:'Foal',        babyEmoji:'🐴', sound:'Neigh neigh!',    accepts:['foal','foals','pony'] },
+  { parent:'Bear',      parentEmoji:'🐻', baby:'Cub',         babyEmoji:'🐻', sound:'Growl!',          accepts:['cub','cubs','bear cub','baby bear'] },
+  { parent:'Kangaroo',  parentEmoji:'🦘', baby:'Joey',        babyEmoji:'🦘', sound:'Thump thump!',    accepts:['joey','joeys','baby kangaroo'] },
+  { parent:'Elephant',  parentEmoji:'🐘', baby:'Calf',        babyEmoji:'🐘', sound:'Paaarp!',         accepts:['calf','calves','baby elephant'] },
+  { parent:'Lion',      parentEmoji:'🦁', baby:'Cub',         babyEmoji:'🦁', sound:'Roar!',           accepts:['cub','cubs','lion cub','baby lion'] },
+  { parent:'Deer',      parentEmoji:'🦌', baby:'Fawn',        babyEmoji:'🦌', sound:'Snort!',          accepts:['fawn','fawns','baby deer'] },
+  { parent:'Frog',      parentEmoji:'🐸', baby:'Tadpole',     babyEmoji:'🐸', sound:'Ribbit ribbit!',  accepts:['tadpole','tadpoles','froglet'] },
+  { parent:'Butterfly', parentEmoji:'🦋', baby:'Caterpillar', babyEmoji:'🐛', sound:'Flutter!',        accepts:['caterpillar','caterpillars'] },
+  { parent:'Goat',      parentEmoji:'🐐', baby:'Kid',         babyEmoji:'🐐', sound:'Meh meh!',        accepts:['kid','kids','baby goat','goat'] },
+  { parent:'Swan',      parentEmoji:'🦢', baby:'Cygnet',      babyEmoji:'🦢', sound:'Honk honk!',      accepts:['cygnet','cygnets','baby swan'] },
+  { parent:'Rabbit',    parentEmoji:'🐇', baby:'Kitten',      babyEmoji:'🐇', sound:'Squeak!',         accepts:['kitten','kit','bunny','baby rabbit'] },
+];
+
+let bScore=0, bRound=1, bCurrent=null, bWrongCount=0, bAnswered=false;
+let bRecognition=null, bListening=false;
+const BSR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const bUsedIndices = new Set();
+
+function babyInit() {
+  bScore=0; bRound=1; bUsedIndices.clear();
+  document.getElementById('babyScore').textContent='0';
+  document.getElementById('babyRound').textContent='1';
+  babyNewRound();
+}
+
+function babyNewRound() {
+  bAnswered=false; bWrongCount=0;
+  if(bListening && bRecognition){ try{bRecognition.stop();}catch(e){} bListening=false; }
+
+  // Pick unused animal; reset pool when exhausted
+  if(bUsedIndices.size >= BABY_ANIMALS.length) bUsedIndices.clear();
+  let idx;
+  do { idx = Math.floor(Math.random()*BABY_ANIMALS.length); } while(bUsedIndices.has(idx));
+  bUsedIndices.add(idx);
+  bCurrent = BABY_ANIMALS[idx];
+
+  const a = bCurrent;
+
+  // Update parent display
+  document.getElementById('babyParentEmoji').textContent = a.parentEmoji;
+  document.getElementById('babyParentLabel').textContent = a.parent;
+
+  // Reset bubble, feedback, hint, next btn, baby col
+  document.getElementById('babyBubble').textContent = 'Who is my baby?';
+  document.getElementById('babyFeedback').textContent = '';
+  document.getElementById('babyFeedback').className = 'baby-feedback';
+  document.getElementById('babyHintText').textContent = '';
+  document.getElementById('babyNextWrap').style.display = 'none';
+  document.getElementById('babyBabyCol').style.display = 'none';
+
+  // Reset mic button
+  bUpdateMicUI();
+
+  // Check for mic / text fallback
+  if(!BSR){
+    document.getElementById('babyTextFallback').style.display='flex';
+    document.getElementById('babyTextInput').value='';
+  } else {
+    document.getElementById('babyTextFallback').style.display='none';
+  }
+
+  // Animate parent in
+  const el=document.getElementById('babyParentEmoji');
+  el.style.animation='none';
+  requestAnimationFrame(()=>{ el.style.animation=''; });
+
+  // Speak intro after short pause
+  setTimeout(()=>{
+    speak(`I am a ${a.parent}! Who is my baby?`, 'question');
+  }, 300);
+}
+
+function babyStartListening() {
+  if(bAnswered) return;
+  if(!BSR){
+    document.getElementById('babyTextFallback').style.display='flex';
+    document.getElementById('babyTextInput').focus();
+    return;
+  }
+  if(bListening) return;
+
+  bListening=true;
+  bUpdateMicUI();
+
+  bRecognition = new BSR();
+  bRecognition.lang='en-US';
+  bRecognition.interimResults=false;
+  bRecognition.maxAlternatives=5;
+
+  bRecognition.onresult=(e)=>{
+    const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
+    bListening=false; bUpdateMicUI();
+    babyCheckAnswer(transcripts);
+  };
+  bRecognition.onerror=(e)=>{
+    bListening=false; bUpdateMicUI();
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
+      document.getElementById('babyTextFallback').style.display='flex';
+    }
+  };
+  bRecognition.onend=()=>{ bListening=false; bUpdateMicUI(); };
+  bRecognition.start();
+}
+
+function babyCheckTextAnswer() {
+  if(bAnswered) return;
+  const val = document.getElementById('babyTextInput').value.toLowerCase().trim();
+  if(!val) return;
+  document.getElementById('babyTextInput').value='';
+  babyCheckAnswer([val]);
+}
+
+function babyCheckAnswer(transcripts) {
+  const a = bCurrent;
+  const isCorrect = transcripts.some(t =>
+    a.accepts.some(ac => t.includes(ac))
+  );
+
+  if(isCorrect) {
+    bAnswered=true;
+    bScore++; bRound++;
+    document.getElementById('babyScore').textContent=bScore;
+    document.getElementById('babyRound').textContent=bRound;
+
+    // Update bubble
+    document.getElementById('babyBubble').textContent = `Yes! ${a.baby} is my baby!`;
+
+    // Feedback
+    const fb=document.getElementById('babyFeedback');
+    fb.textContent=`🌟 ${a.baby}! That's right!`;
+    fb.className='baby-feedback correct';
+
+    launchConfetti();
+
+    // Speak celebration then reveal baby
+    const u=speak(`Yes! ${a.baby} is my baby! ${a.sound}`, 'celebrate');
+    const doReveal=()=>{
+      // Show baby col
+      const col=document.getElementById('babyBabyCol');
+      document.getElementById('babyChildEmoji').textContent=a.babyEmoji;
+      document.getElementById('babyChildLabel').textContent=a.baby;
+      col.style.display='flex';
+      // Re-trigger slide animation
+      const be=document.getElementById('babyChildEmoji');
+      be.style.animation='none';
+      requestAnimationFrame(()=>{ be.style.animation=''; });
+      // Speak the baby name
+      speak(`Meet the little ${a.baby}!`, 'gentle');
+      document.getElementById('babyNextWrap').style.display='block';
+    };
+    if(u) u.onend=doReveal; else setTimeout(doReveal,1600);
+
+  } else {
+    bWrongCount++;
+    const fb=document.getElementById('babyFeedback');
+    fb.className='baby-feedback wrong';
+    if(bWrongCount===1){
+      fb.textContent='Hmm, try again! 🎤';
+      speak(`Ooh, not quite! What is the baby of a ${a.parent} called? Try again!`, 'gentle');
+    } else {
+      fb.textContent=`Hint: starts with "${a.baby[0].toUpperCase()}" 💡`;
+      document.getElementById('babyHintText').textContent=`The baby is a … ${a.baby[0].toUpperCase()}____`;
+      speak(`The answer starts with the letter ${a.baby[0]}. Can you guess it?`, 'gentle');
+    }
+    // If wrong 3+ times, reveal answer
+    if(bWrongCount>=3){
+      bAnswered=true;
+      fb.textContent=`It's a ${a.baby}! 🌸`;
+      fb.className='baby-feedback correct';
+      document.getElementById('babyHintText').textContent='';
+      const u=speak(`It is a ${a.baby}! ${a.sound} Let's try the next one!`, 'gentle');
+      const doReveal=()=>{
+        const col=document.getElementById('babyBabyCol');
+        document.getElementById('babyChildEmoji').textContent=a.babyEmoji;
+        document.getElementById('babyChildLabel').textContent=a.baby;
+        col.style.display='flex';
+        document.getElementById('babyNextWrap').style.display='block';
+      };
+      if(u) u.onend=doReveal; else setTimeout(doReveal,1600);
+    }
+  }
+}
+
+function bUpdateMicUI() {
+  const btn=document.getElementById('babyMicBtn');
+  if(!btn) return;
+  if(bAnswered){
+    btn.disabled=true;
+    btn.textContent='✅ Got it!';
+    btn.classList.remove('listening');
+  } else if(bListening){
+    btn.disabled=false;
+    btn.textContent='🔴 Listening…';
+    btn.classList.add('listening');
+  } else {
+    btn.disabled=false;
+    btn.textContent='🎤 Tap & Say the Answer!';
+    btn.classList.remove('listening');
+  }
 }
 </script>
 </body>
