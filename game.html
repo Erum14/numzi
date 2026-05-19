@@ -1773,7 +1773,8 @@ const BABY_ANIMALS = [
 
 let bScore=0, bRound=1, bCurrent=null, bWrongCount=0, bAnswered=false;
 let bRecognition=null, bListening=false;
-const BSR = window.SpeechRecognition || window.webkitSpeechRecognition;
+// Check at call-time so late-loading browsers / permission contexts work
+function getBSR() { return window.SpeechRecognition || window.webkitSpeechRecognition || null; }
 const bUsedIndices = new Set();
 
 function babyInit() {
@@ -1808,16 +1809,14 @@ function babyNewRound() {
   document.getElementById('babyNextWrap').style.display = 'none';
   document.getElementById('babyBabyCol').style.display = 'none';
 
-  // Reset mic button
+  // Reset mic button visibility and state
+  const _mb = document.getElementById('babyMicBtn');
+  if(_mb) { _mb.style.display=''; _mb.disabled=false; }
   bUpdateMicUI();
 
-  // Check for mic / text fallback
-  if(!BSR){
-    document.getElementById('babyTextFallback').style.display='flex';
-    document.getElementById('babyTextInput').value='';
-  } else {
-    document.getElementById('babyTextFallback').style.display='none';
-  }
+  // Always hide text fallback until mic fails
+  document.getElementById('babyTextFallback').style.display='none';
+  document.getElementById('babyTextInput').value='';
 
   // Animate parent in
   const el=document.getElementById('babyParentEmoji');
@@ -1830,36 +1829,48 @@ function babyNewRound() {
   }, 300);
 }
 
+function babyShowTextFallback() {
+  document.getElementById('babyTextFallback').style.display='flex';
+  document.getElementById('babyTextInput').focus();
+  const btn=document.getElementById('babyMicBtn');
+  btn.style.display='none'; // hide mic btn once we know it won't work
+}
+
 function babyStartListening() {
   if(bAnswered) return;
-  if(!BSR){
-    document.getElementById('babyTextFallback').style.display='flex';
-    document.getElementById('babyTextInput').focus();
+  if(bListening) return;
+
+  const SR = getBSR();
+  if(!SR){
+    babyShowTextFallback();
     return;
   }
-  if(bListening) return;
 
   bListening=true;
   bUpdateMicUI();
 
-  bRecognition = new BSR();
-  bRecognition.lang='en-US';
-  bRecognition.interimResults=false;
-  bRecognition.maxAlternatives=5;
+  try {
+    bRecognition = new SR();
+    bRecognition.lang='en-US';
+    bRecognition.interimResults=false;
+    bRecognition.maxAlternatives=5;
 
-  bRecognition.onresult=(e)=>{
-    const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
+    bRecognition.onresult=(e)=>{
+      const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
+      bListening=false; bUpdateMicUI();
+      babyCheckAnswer(transcripts);
+    };
+    bRecognition.onerror=(e)=>{
+      bListening=false; bUpdateMicUI();
+      // Any mic error → fall back to text input
+      babyShowTextFallback();
+    };
+    bRecognition.onend=()=>{ bListening=false; bUpdateMicUI(); };
+    bRecognition.start();
+  } catch(err) {
     bListening=false; bUpdateMicUI();
-    babyCheckAnswer(transcripts);
-  };
-  bRecognition.onerror=(e)=>{
-    bListening=false; bUpdateMicUI();
-    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
-      document.getElementById('babyTextFallback').style.display='flex';
-    }
-  };
-  bRecognition.onend=()=>{ bListening=false; bUpdateMicUI(); };
-  bRecognition.start();
+    babyShowTextFallback();
+  }
 }
 
 function babyCheckTextAnswer() {
@@ -1943,18 +1954,18 @@ function babyCheckAnswer(transcripts) {
 
 function bUpdateMicUI() {
   const btn=document.getElementById('babyMicBtn');
-  if(!btn) return;
+  if(!btn || btn.style.display==='none') return;
   if(bAnswered){
     btn.disabled=true;
     btn.textContent='✅ Got it!';
     btn.classList.remove('listening');
   } else if(bListening){
     btn.disabled=false;
-    btn.textContent='🔴 Listening…';
+    btn.innerHTML='🔴 Listening&hellip;';
     btn.classList.add('listening');
   } else {
     btn.disabled=false;
-    btn.textContent='🎤 Tap & Say the Answer!';
+    btn.innerHTML='🎤 Tap &amp; Say the Answer!';
     btn.classList.remove('listening');
   }
 }
