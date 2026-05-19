@@ -1054,8 +1054,16 @@ function buildSoundRound() {
   const correct=pick(ANIMALS);
   document.getElementById('animalQuestion').textContent='🎵 Listen… what animal makes this sound?';
 
-  // Speak the sound after short delay
-  setTimeout(()=>speak(correct.sound, 0.85, 1.2), 400);
+  // Speak the question, then the animal sound once question finishes
+  setTimeout(() => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const q = new SpeechSynthesisUtterance('Listen… what animal makes this sound?');
+    q.rate = 0.85; q.pitch = 1.25; q.volume = 1;
+    q.onend = () => setTimeout(() => speak(correct.sound, 0.85, 1.2), 350);
+    q.onerror = () => setTimeout(() => speak(correct.sound, 0.85, 1.2), 350);
+    window.speechSynthesis.speak(q);
+  }, 300);
 
   // Show clue pill after speaking
   setTimeout(()=>{
