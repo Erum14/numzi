@@ -1895,7 +1895,8 @@ function babyStartListening() {
     bRecognition.onresult=(e)=>{
       clearTimeout(bTimeout);
       const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
-      bListening=false; bUpdateMicUI(); bSetMicStatus('');
+      bListening=false; bUpdateMicUI();
+      bSetMicStatus('I heard: "' + transcripts[0] + '"');
       babyCheckAnswer(transcripts);
     };
     bRecognition.onerror=(e)=>{
@@ -1903,8 +1904,10 @@ function babyStartListening() {
       bListening=false; bUpdateMicUI();
       if(e.error==='not-allowed'||e.error==='service-not-allowed')
         bSetMicStatus('🚫 Mic blocked — click the 🔒 in address bar → Allow Microphone');
-      else if(e.error==='no-speech')
+      else if(e.error==='no-speech'){
         bSetMicStatus('Nothing heard — tap again!');
+        bListening=false; bUpdateMicUI();
+      }
       else if(e.error==='aborted')
         bSetMicStatus('');
       else
