@@ -1857,7 +1857,12 @@ function babyStartListening() {
   if(btn){ btn.textContent='⏳ Starting…'; btn.classList.add('listening'); }
 
   if(bAnswered){ if(btn){ btn.textContent='✅ Got it!'; btn.classList.remove('listening'); } return; }
-  if(bListening){ return; } // already running
+
+  // If already listening, abort it and restart fresh
+  if(bListening){
+    if(bRecognition){ try{bRecognition.abort();}catch(e){} }
+    bListening=false;
+  }
 
   const SR = getBSR();
   if(!SR){
@@ -1868,7 +1873,16 @@ function babyStartListening() {
 
   bListening=true;
   if(btn){ btn.textContent='🔴 Listening…'; }
-  bSetMicStatus('Say the baby name out loud!');
+  bSetMicStatus('🎤 Speak now! (If asked, click Allow microphone)');
+
+  // Safety timeout — reset if stuck for 12s (e.g. permission dialog ignored)
+  const bTimeout = setTimeout(()=>{
+    if(bListening){
+      if(bRecognition){ try{bRecognition.abort();}catch(e){} }
+      bListening=false; bUpdateMicUI();
+      bSetMicStatus('Timed out — tap again or type below!');
+    }
+  }, 12000);
 
   try {
     if(bRecognition){ try{bRecognition.abort();}catch(e){} }
@@ -1879,27 +1893,31 @@ function babyStartListening() {
     bRecognition.maxAlternatives=5;
 
     bRecognition.onresult=(e)=>{
+      clearTimeout(bTimeout);
       const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
       bListening=false; bUpdateMicUI(); bSetMicStatus('');
       babyCheckAnswer(transcripts);
     };
     bRecognition.onerror=(e)=>{
+      clearTimeout(bTimeout);
       bListening=false; bUpdateMicUI();
       if(e.error==='not-allowed'||e.error==='service-not-allowed')
-        bSetMicStatus('Mic blocked — allow mic access or type below');
+        bSetMicStatus('🚫 Mic blocked — click the 🔒 in address bar → Allow Microphone');
       else if(e.error==='no-speech')
         bSetMicStatus('Nothing heard — tap again!');
       else if(e.error==='aborted')
         bSetMicStatus('');
       else
-        bSetMicStatus('Mic error: '+e.error+' — type below');
+        bSetMicStatus('Mic error: '+e.error+' — try typing below');
     };
     bRecognition.onend=()=>{
+      clearTimeout(bTimeout);
       if(bListening){ bListening=false; bUpdateMicUI(); bSetMicStatus(''); }
     };
 
     bRecognition.start();
   } catch(err){
+    clearTimeout(bTimeout);
     bListening=false; bUpdateMicUI();
     bSetMicStatus('Mic unavailable: '+err.message);
   }
