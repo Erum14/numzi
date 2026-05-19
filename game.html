@@ -1831,41 +1831,57 @@ function babyNewRound() {
 
 function babyShowTextFallback() {
   document.getElementById('babyTextFallback').style.display='flex';
-  document.getElementById('babyTextInput').focus();
+  setTimeout(()=>{ try{ document.getElementById('babyTextInput').focus(); }catch(e){} }, 50);
   const btn=document.getElementById('babyMicBtn');
-  btn.style.display='none'; // hide mic btn once we know it won't work
+  if(btn) btn.style.display='none';
 }
 
 function babyStartListening() {
-  if(bAnswered) return;
-  if(bListening) return;
+  if(bAnswered || bListening) return;
 
   const SR = getBSR();
-  if(!SR){
-    babyShowTextFallback();
-    return;
-  }
+  if(!SR){ babyShowTextFallback(); return; }
 
+  // ── Update UI immediately (before any async mic ops) ──
   bListening=true;
   bUpdateMicUI();
+  document.getElementById('babyFeedback').textContent='🎤 Say the baby name!';
+  document.getElementById('babyFeedback').className='baby-feedback';
 
   try {
     bRecognition = new SR();
     bRecognition.lang='en-US';
+    bRecognition.continuous=false;
     bRecognition.interimResults=false;
     bRecognition.maxAlternatives=5;
+
+    bRecognition.onstart=()=>{
+      document.getElementById('babyFeedback').textContent='🔴 Listening… say the baby name!';
+    };
 
     bRecognition.onresult=(e)=>{
       const transcripts=Array.from(e.results[0]).map(r=>r.transcript.toLowerCase().trim());
       bListening=false; bUpdateMicUI();
+      document.getElementById('babyFeedback').textContent='';
       babyCheckAnswer(transcripts);
     };
+
     bRecognition.onerror=(e)=>{
       bListening=false; bUpdateMicUI();
-      // Any mic error → fall back to text input
+      if(e.error==='no-speech'){
+        // Just reset — let them tap again
+        document.getElementById('babyFeedback').textContent='';
+        return;
+      }
+      if(e.error==='aborted') return; // we stopped it ourselves
+      document.getElementById('babyFeedback').textContent='';
       babyShowTextFallback();
     };
-    bRecognition.onend=()=>{ bListening=false; bUpdateMicUI(); };
+
+    bRecognition.onend=()=>{
+      if(bListening){ bListening=false; bUpdateMicUI(); }
+    };
+
     bRecognition.start();
   } catch(err) {
     bListening=false; bUpdateMicUI();
